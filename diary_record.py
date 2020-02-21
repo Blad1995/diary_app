@@ -35,6 +35,13 @@ class DiaryRecord:
         date_str = self.date.strftime("%d. %m. %Y")
         return f"{date_str} – {self.title}: {self.text}"
 
+    def __repr__(self):
+        repr_string = f"DiaryRecord instance\nDate: {self.date}\nTitle: {self.title}\nText: {self.text}\nDate of creation: {self.date_of_creation}\n"
+        repr_string += "Dates of alternation:\n"
+        for a_date in self.list_of_alteration_dates:
+            repr_string += str(a_date) + "\n"
+        return repr_string
+
     def export_as_text(self):
         ppc.copy(str(self))
 
