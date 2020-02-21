@@ -1,0 +1,3 @@
+class Diary:
+    # TODO
+    pass
