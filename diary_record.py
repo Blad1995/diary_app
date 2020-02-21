@@ -1,4 +1,5 @@
 from datetime import datetime
+import pyperclip as ppc
 
 
 class DiaryRecord:
@@ -29,3 +30,14 @@ class DiaryRecord:
         self.text = self.text if text is None else text
         self.date = self.date if date is None else date
         self.list_of_alteration_dates.append(datetime.now() if alteration_date is None else alteration_date)
+
+    def __str__(self):
+        date_str = self.date.strftime("%d. %m. %Y")
+        return f"{date_str} – {self.title}: {self.text}"
+
+    def export_as_text(self):
+        ppc.copy(str(self))
+
+    def export(self):
+        # todo epxort - možná bude stačit jen ta __str__ reprezentace
+        pass
