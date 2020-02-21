@@ -21,15 +21,11 @@ class DiaryRecord:
         :return: Nothing.
         """
         # check proper data types
-        if type(text) is not str:
-            raise TypeError(f"Parameter provided for 'text' is not suitable. Text should be 'string'. Given parameter is: '{type(text)}'")
-        elif type(title) is not str:
-            raise TypeError(f"Parameter provided for 'title' is not suitable. Title should be 'string'. Given parameter is: '{type(title)}'")
-        elif type(date) is not datetime:
-            raise TypeError(f"Parameter provided for 'date' is not suitable. Date should be 'datetime'. Given parameter is: '{type(date)}'")
+        assert type(text) == str, f"Parameter provided for 'text' is not suitable. Text should be 'string'. Given parameter is: '{type(text)}'"
+        assert type(title) == str, f"Parameter provided for 'title' is not suitable. Title should be 'string'. Given parameter is: '{type(title)}'"
+        assert type(date) == datetime, f"Parameter provided for 'date' is not suitable. Date should be 'datetime'. Given parameter is: '{type(date)}'"
 
         self.title = self.title if title is None else title
         self.text = self.text if text is None else text
         self.date = self.date if date is None else date
         self.list_of_alteration_dates.append(datetime.now() if alteration_date is None else alteration_date)
-        
