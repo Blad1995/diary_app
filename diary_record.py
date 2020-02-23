@@ -1,6 +1,7 @@
 from datetime import datetime
 import pyperclip as ppc
 import re as re
+import logging as log
 
 
 class DiaryRecord:
@@ -14,6 +15,8 @@ class DiaryRecord:
         self.list_of_alteration_dates = []
         # self.history_of_changes = {}
         # self.list_of_media = []
+
+        log.info(datetime.now().strftime("%d.%m.%Y-%H:%M:%S") + f" - Diary Record was created: {str(self)}")
 
     def update(self, date: datetime = None, text: str = None, title: str = None, alteration_date: datetime = None):
         """
@@ -34,6 +37,8 @@ class DiaryRecord:
         self.date = self.date if date is None else date
         self.list_of_alteration_dates.append(datetime.now() if alteration_date is None else alteration_date)
 
+        log.info(datetime.now().strftime("%d.%m.%Y-%H:%M:%S") + f" - Diary Record was updated: {str(self)}")
+
     def __str__(self):
         date_str = self.date.strftime("%d. %m. %Y")
         return f"{date_str} – {self.title}: {self.text}"
@@ -45,7 +50,10 @@ class DiaryRecord:
             repr_string += str(a_date) + "\n"
         return repr_string
 
-    def export_as_text(self):
+    def export_to_clipboard(self):
+        """
+        Function for copying DiaryRecord to clipboard.
+        """
         ppc.copy(str(self))
 
     def export(self):
@@ -53,10 +61,18 @@ class DiaryRecord:
         pass
 
     @classmethod
-    def import_from_text(cls, text):
+    def import_from_text(cls, text: str) -> DiaryRecord:
+        """
+        :param cls: DiaryRecord class
+        :param text: Text from which the info about DiaryRecord would be extracted.
+        :return: new DiaryRecord instance
+        """
         if re.search(DiaryRecord.__IMPORT_PATTERN,   text):
             parsed_text = re.match(DiaryRecord.__IMPORT_PATTERN, text)
-            for i in parsed_text.groups():
-                print(i)
+            # Assign each parsed group to corresponding variable
+            date, title, text = parsed_text.groups()
+
+            log.info(datetime.now().strftime("%d.%m.%Y-%H:%M:%S") + f" - Imported text was parsed as: {parsed_text.groups()}")
+            return DiaryRecord(date=date, title=title, text=text)
         else:
             raise ValueError(f"Format of the text to import is invalid. Expected format:\n{DiaryRecord.__IMPORT_PATTERN}")
