@@ -1,8 +1,11 @@
 from datetime import datetime
 import pyperclip as ppc
+import re as re
 
 
 class DiaryRecord:
+    __IMPORT_PATTERN = r"^(\d{1,2}\. \d{1,2}\. \d{4}) – (.+): (.+)$"
+
     def __init__(self, date, title, text, date_of_creation=None):
         self.date = date
         self.title = title
@@ -46,5 +49,14 @@ class DiaryRecord:
         ppc.copy(str(self))
 
     def export(self):
-        # todo epxort - možná bude stačit jen ta __str__ reprezentace
+        # todo export - možná bude  jen ta __str__ reprezentace
         pass
+
+    @classmethod
+    def import_from_text(cls, text):
+        if re.search(DiaryRecord.__IMPORT_PATTERN,   text):
+            parsed_text = re.match(DiaryRecord.__IMPORT_PATTERN, text)
+            for i in parsed_text.groups():
+                print(i)
+        else:
+            raise ValueError(f"Format of the text to import is invalid. Expected format:\n{DiaryRecord.__IMPORT_PATTERN}")
