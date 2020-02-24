@@ -11,3 +11,4 @@ if __name__== "__main__":
         DiaryRecord(datetime(2020, 2, 22), "Pohodová neděle", "Ráno jsem nešel do školy.  Odpoledne byla procházka.\n "\
                                                          "Doma to byla sranda$÷+ěš  .")
     ]
+    print(records)
