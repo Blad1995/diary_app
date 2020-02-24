@@ -28,9 +28,12 @@ class DiaryRecord:
         :return: Nothing.
         """
         # check proper data types
-        assert type(text) == str, f"Parameter provided for 'text' is not suitable. Text should be 'string'. Given parameter is: '{type(text)}'"
-        assert type(title) == str, f"Parameter provided for 'title' is not suitable. Title should be 'string'. Given parameter is: '{type(title)}'"
-        assert type(date) == datetime, f"Parameter provided for 'date' is not suitable. Date should be 'datetime'. Given parameter is: '{type(date)}'"
+        assert type(text) == str, f"Parameter provided for 'text' is not suitable." \
+                                  f" Text should be 'string'. Given parameter is: '{type(text)}'"
+        assert type(title) == str, f"Parameter provided for 'title' is not suitable." \
+                                   f" Title should be 'string'. Given parameter is: '{type(title)}'"
+        assert type(date) == datetime, f"Parameter provided for 'date' is not suitable." \
+                                       f" Date should be 'datetime'. Given parameter is: '{type(date)}'"
 
         self.title = self.title if title is None else title
         self.text = self.text if text is None else text
@@ -44,7 +47,8 @@ class DiaryRecord:
         return f"{date_str} – {self.title}: {self.text}"
 
     def __repr__(self):
-        repr_string = f"DiaryRecord instance\nDate: {self.date}\nTitle: {self.title}\nText: {self.text}\nDate of creation: {self.date_of_creation}\n"
+        repr_string = f"DiaryRecord instance\nDate: {self.date}\nTitle: {self.title}\n" \
+                      f"Text: {self.text}\nDate of creation: {self.date_of_creation}\n"
         repr_string += "Dates of alternation:\n"
         for a_date in self.list_of_alteration_dates:
             repr_string += str(a_date) + "\n"
