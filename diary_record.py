@@ -18,7 +18,7 @@ class DiaryRecord:
 
         log.info(datetime.now().strftime("%d.%m.%Y-%H:%M:%S") + f" - Diary Record was created: {str(self)}")
 
-    def update(self, date: datetime = None, text: str = None, title: str = None, alteration_date: datetime = None):
+    def update(self, date: datetime = None, text: str = None, title: str = None, alteration_date: datetime = None) -> None:
         """
         Update existing DiaryRecord. Raise TypeError exception if the provided parameters type are not suitable.
         :param date: New date of the record. If None, then no changes in date happen.
@@ -54,7 +54,7 @@ class DiaryRecord:
             repr_string += str(a_date) + "\n"
         return repr_string
 
-    def export_to_clipboard(self):
+    def export_to_clipboard(self) -> None:
         """
         Function for copying DiaryRecord to clipboard.
         """
@@ -65,7 +65,7 @@ class DiaryRecord:
         pass
 
     @classmethod
-    def import_from_text(cls, text: str) -> DiaryRecord:
+    def import_from_text(cls, text: str) -> "DiaryRecord":
         """
         :param cls: DiaryRecord class
         :param text: Text from which the info about DiaryRecord would be extracted.
