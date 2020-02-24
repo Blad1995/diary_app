@@ -1,4 +1,5 @@
 from datetime import datetime
+import logging as log
 
 
 class OwnerInfo:
@@ -12,6 +13,7 @@ class OwnerInfo:
         # should be constant after creation
         self.date_joined = date_joined if date_joined else datetime.now()
         self.last_active = self.date_joined
+        log.info(datetime.now().strftime("%d.%m.%Y-%H:%M:%S") + f"New instance of owner info was created. {str(self)}")
 
     # Name setters & getters
     @property
@@ -56,3 +58,6 @@ class OwnerInfo:
     @last_active.setter
     def last_active(self, last_active):
         self.last_active = last_active
+
+    def __str__(self):
+        return f"{self.name}, email: {self.email}, created: {self.date_joined}"
