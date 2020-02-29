@@ -78,7 +78,7 @@ class OwnerInfo:
     def __str__(self):
         return f"{self.name}, email: {self.email}, created: {self.date_joined}"
 
-    def is_password_valid(self, password: str):
+    def is_password_valid(self, password: str) -> bool:
         """
         Determines if password is valid.
         :param password: string of the password to be tested
