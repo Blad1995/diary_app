@@ -3,7 +3,18 @@ import logging as log
 
 
 class OwnerInfo:
+    """
+    Class representing personal info of the Owner.
+    """
     def __init__(self, name: str, password, photo=None, email: str = None, date_joined: datetime = None):
+        """
+        Create new instance of OwnerInfo class with following parameters.
+        :param name: Name of the owner
+        :param password: New password in the form of the string
+        :param photo: Photo of the owner
+        :param email: Email address of the owner
+        :param date_joined: Date on which the owner was added to application (created in app)
+        """
         self.name = name
         self.photo = photo
         self.email = email
