@@ -44,6 +44,10 @@ class Owner:
     def bio(self, new_bio):
         self.__bio = new_bio
 
+    @property
+    def list_of_diaries(self):
+        return self.__list_of_diaries
+
     def change_password(self, new_password: str, old_password) -> None:
         if self.__info.is_password_valid(old_password):
             self.__info.password = new_password
