@@ -49,7 +49,7 @@ class Diary:
             log.error(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + "Cannot locate 'diary:owner_name_file_name' in config file")
             raise RuntimeError("Config file has been corrupted. 'diary:owner_name_file_name' missing.")
 
-        try:    
+        try:
             # Saves owners name to file
             with open(owner_path, mode="wb") as f:
                 pickle.dump(obj=owners_names, file=f, protocol=pickle.HIGHEST_PROTOCOL)
@@ -90,11 +90,14 @@ class Diary:
                 raise RuntimeError(f"Can't open the file {owner_file_path} to save data.")
 
     def set_config_first_use_false(self):
-        #No exception should occur. This property of cfg was already addressed.
+        # No exception should occur. This property of cfg was already addressed.
         self.cfg["general"]["first_use"] = False
         try:
             with open("config.yml", "wb") as f:
-                yaml.dump()
+                yaml.dump(data=self.cfg, stream=f)
+        except IOError as e:
+            log.error(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"Error writing to config.yml file. {e}")
+
 
 if __name__ == "__main__":
     main_app = Diary()
