@@ -18,14 +18,35 @@ class Owner:
         :param photo: photo of the Owner
         :param data_joined: Date when the Owner was created in the app.
         """
-        self.info = OwnerInfo(name, password, photo, email, data_joined)
-        self.list_of_diaries = []
-        self.bio = bio
+        self.__info = OwnerInfo(name, password, photo, email, data_joined)
+        self.__list_of_diaries = []
+        self.__bio = bio
         log.info(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"New instance of owner was created. {str(self)}")
 
+    @property
+    def info(self):
+        return self.__info
+
+    @info.setter
+    def info(self, **kwargs):
+        for key, value in kwargs.items():
+            try:
+                setattr(self.__info, key, value)
+            except AttributeError as e:
+                log.warning(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"Invalid argument provided for info.setter in Owner - "
+                                                                              f"{e}")
+
+    @property
+    def bio(self):
+        return self.__bio
+
+    @bio.setter
+    def bio(self, new_bio):
+        self.__bio = new_bio
+
     def change_password(self, new_password: str, old_password) -> None:
-        if self.info.is_password_valid(old_password):
-            self.info.password = new_password
+        if self.__info.is_password_valid(old_password):
+            self.__info.password = new_password
         else:
             raise PermissionError("Old password is not valid.")
     
@@ -36,9 +57,9 @@ class Owner:
         :param bio: Short summary of the new Diary
         :return: True if Diary was created, False otherwise
         """
-        new_diary = Diary(title = title, bio = bio, date_of_creation = datetime.now())
+        new_diary = Diary(title=title, bio=bio, date_of_creation=datetime.now())
         try:
-            self.list_of_diaries.append(new_diary)
+            self.__list_of_diaries.append(new_diary)
         except Exception as e:
             log.info(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"Failed to create new Diary"
                                                                        f" with parameters: Title: {title}, {bio}, {date_of_creation}\n"
