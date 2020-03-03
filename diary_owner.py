@@ -78,7 +78,7 @@ class Owner:
         """
         Deletes diary stored in the dict_of_diaries
         :param title: Title of the Diary. Unique identification.
-        :return:
+        :return: True if Diary was successfully deleted. False if there is no diary with such title. Propagate exception if unexpected error occurs
         """
         try:
             del self.dict_of_diaries[title]
