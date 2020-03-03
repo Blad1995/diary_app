@@ -19,7 +19,7 @@ class Owner:
         :param data_joined: Date when the Owner was created in the app.
         """
         self.__info = OwnerInfo(name, password, photo, email, data_joined)
-        self.__list_of_diaries = []
+        self.__dict_of_diaries = {}
         self.__bio = bio
         log.info(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"New instance of owner was created. {str(self)}")
 
@@ -45,12 +45,12 @@ class Owner:
         self.__bio = new_bio
 
     @property
-    def list_of_diaries(self):
-        return self.__list_of_diaries
+    def dict_of_diaries(self):
+        return self.__dict_of_diaries
 
     def change_password(self, new_password: str, old_password) -> None:
-        if self.__info.is_password_valid(old_password):
-            self.__info.password = new_password
+        if self.info.is_password_valid(old_password):
+            self.info.password = new_password
         else:
             raise PermissionError("Old password is not valid.")
     
@@ -61,13 +61,38 @@ class Owner:
         :param bio: Short summary of the new Diary
         :return: True if Diary was created, False otherwise
         """
-        new_diary = Diary(title=title, bio=bio, date_of_creation=datetime.now())
+        if title in self.dict_of_diaries.keys():
+            raise ValueError(f"Diary with such title already exists. Title:{title}")
+
+        date_of_creation = datetime.now()
+        new_diary = Diary(title=title, bio=bio, date_of_creation=date_of_creation)
         try:
-            self.__list_of_diaries.append(new_diary)
+            self.dict_of_diaries[title] = new_diary
         except Exception as e:
             log.info(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"Failed to create new Diary"
                                                                        f" with parameters: Title: {title}, {bio}, {date_of_creation}\n"
                                                                        f"Exception: {e}")
+            raise e
+        
+    def delete_diary(self, title):
+        """
+        Deletes diary stored in the dict_of_diaries
+        :param title: Title of the Diary. Unique identification.
+        :return:
+        """
+        try:
+            del self.dict_of_diaries[title]
+        except KeyError as e:
+            log.warning(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"Failed to delete Diary"
+                                                                       f" with parameters: Title: {title}, {bio}, {date_of_creation}\n"
+                                                                       f"Exception: {e}")
             return False
+        except Exception as e:
+            log.warning(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"Failed to delete Diary"
+                                                                       f" with parameters: Title: {title}. Exception: "
+                                                                       f"{e}")
+            raise e
         else:
+            log.info(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"Deleted Diary"
+                                                                       f" with title: {title}")
             return True
