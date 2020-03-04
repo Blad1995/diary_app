@@ -24,6 +24,10 @@ class Owner:
         log.info(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"New instance of owner was created. {str(self)}")
 
     @property
+    def name(self):
+        return self.info.name
+
+    @property
     def info(self):
         return self.__info
 
