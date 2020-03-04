@@ -12,6 +12,6 @@ setup(
     description='My Diary is the app for storing your diary records.',
     long_description=open('README.txt').read(),
     install_requires=[
-        "pyperclip",
-    ]
+        "pyperclip", 'PyYAML'
+        ]
 )
