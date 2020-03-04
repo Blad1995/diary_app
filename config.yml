@@ -1,3 +1,5 @@
 diary:
     dir_path: "./data/"
     owner_name_file_name: "owners_names.Ddata"
+general:
+    first_use: False
