@@ -27,11 +27,26 @@ class Diary:
     def save_data_to_disc(self):
         owners_names = [o.name for o in self.owners]
         for o_index, name in enumerate(owners_names):
-            with open(self.dir_path + name + ".Ddata", mode="wb") as f:
-                pickle.dump(obj=self.owners[o_index], file=f, protocol=pickle.HIGHEST_PROTOCOL)
+            owner_file_path = self.dir_path + name + ".Ddata"
+            try:
+                with open(owner_file_path, mode="wb") as f:
+                    pickle.dump(obj=self.owners[o_index], file=f, protocol=pickle.HIGHEST_PROTOCOL)
+            except IOError as e:
+                log.error(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"Error writing to {owner_path} file. {e}")
+                raise RuntimeError(f"Can't open the file {owner_file_path} to save data.")
 
-        with open(self.dir_path + "owners_names.Ddata", mode="wb") as f:
-            pickle.dump(obj=owners_names, file=f, protocol=pickle.HIGHEST_PROTOCOL)
+        try:
+            owner_path = self.dir_path + self.cfg["diary"]["owner_name_file_name"]
+        except KeyError as e:
+            log.error(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + "Cannot locate 'diary:owner_name_file_name' in config file")
+            raise RuntimeError("Config file has been corrupted. 'diary:owner_name_file_name' missing.")
+
+        try:
+            with open(owner_path, mode="wb") as f:
+                pickle.dump(obj=owners_names, file=f, protocol=pickle.HIGHEST_PROTOCOL)
+        except IOError as e:
+            log.error(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"Error writing to {owner_path} file. {e}")
+            raise RuntimeError(f"Can't open the file {owner_path} to save data.")
 
     def load_data_from_disc(self):
         try:
@@ -45,6 +60,10 @@ class Diary:
                 owner_names = pickle.load(f)
         except FileNotFoundError as e:
             log.error(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"File {owner_path} not found")
+            raise RuntimeError(f"File {owner_path} not found. Can't load the data.")
+        except IOError as e:
+            log.error(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"Error reading {owner_path} file. {e}")
+            raise RuntimeError(f"Can't load the data from {owner_path}.")
 
         # load all data about owners
         # TODO do budoucna možná bude potřeba předělat na samostatné načítání po jednom Ownerovi -->
