@@ -31,7 +31,7 @@ class Diary:
         self.active_owner = None
 
     def save_data_to_disc(self):
-        set_config_first_use_false()
+        self.set_config_first_use_false()
         owners_names = [o.name for o in self.owners]
         # Saves every Owner separately
         for o_index, name in enumerate(owners_names):
