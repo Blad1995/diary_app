@@ -32,10 +32,10 @@ class Diary:
 
     def save_data_to_disc(self):
         self.set_config_first_use_false()
-        owners_names = [o.name for o in self.owners]
+        owners_logins = [o.login for o in self.owners]
         # Saves every Owner separately
-        for o_index, name in enumerate(owners_names):
-            owner_file_path = self.dir_path + name + ".Ddata"
+        for o_index, login in enumerate(owners_logins):
+            owner_file_path = self.dir_path + login + ".Ddata"
             try:
                 with open(owner_file_path, mode="wb") as f:
                     pickle.dump(obj=self.owners[o_index], file=f, protocol=pickle.HIGHEST_PROTOCOL)
@@ -44,31 +44,31 @@ class Diary:
                 raise RuntimeError(f"Can't open the file {owner_file_path} to save data.")
 
         try:
-            owner_path = self.dir_path + self.cfg["diary"]["owner_name_file_name"]
+            owner_path = self.dir_path + self.cfg["diary"]["owner_login_file_name"]
         except KeyError as e:
-            log.error(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + "Cannot locate 'diary:owner_name_file_name' in config file")
-            raise RuntimeError("Config file has been corrupted. 'diary:owner_name_file_name' missing.")
+            log.error(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + "Cannot locate 'diary:owner_login_file_name' in config file")
+            raise RuntimeError("Config file has been corrupted. 'diary:owner_login_file_name' missing.")
 
         try:
-            # Saves owners name to file
+            # Saves owners login to file
             with open(owner_path, mode="wb") as f:
-                pickle.dump(obj=owners_names, file=f, protocol=pickle.HIGHEST_PROTOCOL)
+                pickle.dump(obj=owners_logins, file=f, protocol=pickle.HIGHEST_PROTOCOL)
         except IOError as e:
             log.error(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"Error writing to {owner_path} file. {e}")
             raise RuntimeError(f"Can't open the file {owner_path} to save data.")
 
     def load_data_from_disc(self):
         try:
-            # tries to find Owner names file path in config file
-            owner_path = self.dir_path + self.cfg["diary"]["owner_name_file_name"]
+            # tries to find Owner logins file path in config file
+            owner_path = self.dir_path + self.cfg["diary"]["owner_login_file_name"]
         except KeyError as e:
-            log.error(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + "Cannot locate 'diary:owner_name_file_name' in config file")
-            raise RuntimeError("Config file has been corrupted. 'diary:owner_name_file_name' missing.")
+            log.error(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + "Cannot locate 'diary:owner_login_file_name' in config file")
+            raise RuntimeError("Config file has been corrupted. 'diary:owner_login_file_name' missing.")
 
-        # try to read the owner names from file
+        # try to read the owner logins from file
         try:
             with open(owner_path, mode="rb") as f:
-                owners_names = pickle.load(f)
+                owners_logins = pickle.load(f)
         except FileNotFoundError as e:
             log.error(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"File {owner_path} not found")
             raise RuntimeError(f"File {owner_path} not found. Can't load the data.")
@@ -79,8 +79,8 @@ class Diary:
         # load all data about owners
         # FIXME do budoucna možná bude potřeba předělat na samostatné načítání po jednom Ownerovi -->
         #  paměťové nároky na načtení všech dat vs jednoho Ownera
-        for o_index, name in enumerate(owners_names):
-            owner_file_path = self.dir_path + name + ".Ddata"
+        for o_index, login in enumerate(owners_logins):
+            owner_file_path = self.dir_path + login + ".Ddata"
             try:
                 with open(owner_file_path, mode="rb") as f:
                     new_owner = pickle.load(file=f)
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     main_app = Diary()
     if main_app.cfg["general"]["first_use"]:
         print("First use was used")
-        main_app.owners.append(Owner(name="Ondra Divina", password="Heslo století"))
+        main_app.owners.append(Owner(login="Ondra Divina", password="Heslo století"))
 
         main_app.save_data_to_disc()
     else:

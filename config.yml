@@ -1,5 +1,5 @@
 diary:
     dir_path: "./data/"
-    owner_name_file_name: "owners_names.Ddata"
+    owner_login_file_name: "owners_logins.Ddata"
 general:
-    first_use: False
+    first_use: True
