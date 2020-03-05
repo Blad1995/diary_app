@@ -1,14 +1,17 @@
 import logging as log
 from datetime import datetime
-from diary_owner_info import OwnerInfo
+
+from config import DiaryConfig
 from diary_book import Diary
+from diary_owner_info import OwnerInfo
 
 
 class Owner:
     """
     Class representing Owner of the diary.
     """
-    def __init__(self, login: str, password: str, name: str = None, email: str = None, bio: str = None, photo = None, data_joined: datetime = None):
+
+    def __init__(self, login: str, password: str, **kwargs):
         """
         Create new instance of the class Owner.
         :param login: owner login used to log into app
@@ -19,11 +22,18 @@ class Owner:
         :param photo: photo of the Owner
         :param data_joined: Date when the Owner was created in the app.
         """
+        self.cfg = DiaryConfig()
         self.__login = login
-        self.__info = OwnerInfo(name, password, photo, email, data_joined)
+        self.__info = OwnerInfo(
+            name=kwargs.get("name", None),
+            password=password,
+            photo=kwargs.get("photo", None),
+            email=kwargs.get("email", None),
+            date_joined=kwargs.get("data_joined", None)
+            )
         self.__dict_of_diaries = {}
-        self.__bio = bio
-        log.info(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"New instance of owner was created. {str(self)}")
+        self.__bio = kwargs.get("bio", None)
+        log.info(datetime.now().strftime(self.cfg.log_time_format) + f" - New instance of owner was created. {str(self)}")
 
     @property
     def login(self):
@@ -43,8 +53,8 @@ class Owner:
             try:
                 setattr(self.__info, key, value)
             except AttributeError as e:
-                log.warning(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"Invalid argument provided for info.setter in Owner - "
-                                                                              f"{e}")
+                log.warning(datetime.now().strftime(self.cfg.log_time_format) + f" - Invalid argument provided for info.setter in Owner - "
+                                                                                f"{e}")
 
     @property
     def bio(self):
@@ -63,7 +73,7 @@ class Owner:
             self.info.password = new_password
         else:
             raise PermissionError("Old password is not valid.")
-    
+
     def create_diary(self, title: str, bio = None):
         """
         Create new Diary and add it to database of Diaries of the Owner
@@ -79,11 +89,11 @@ class Owner:
         try:
             self.dict_of_diaries[title] = new_diary
         except Exception as e:
-            log.info(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"Failed to create new Diary"
-                                                                       f" with parameters: Title: {title}, {bio}, {date_of_creation}\n"
-                                                                       f"Exception: {e}")
+            log.info(datetime.now().strftime(self.cfg.log_time_format) + f" - Failed to create new Diary"
+                                                                         f" with parameters: Title: {title}, {bio}, {date_of_creation}\n"
+                                                                         f"Exception: {e}")
             raise e
-        
+
     def delete_diary(self, title):
         """
         Deletes diary stored in the dict_of_diaries
@@ -93,16 +103,16 @@ class Owner:
         try:
             del self.dict_of_diaries[title]
         except KeyError as e:
-            log.warning(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"Failed to delete Diary"
-                                                                       f" with parameters: Title: {title}, {bio}, {date_of_creation}\n"
-                                                                       f"Exception: {e}")
+            log.warning(datetime.now().strftime(self.cfg.log_time_format) + f" - Failed to delete Diary"
+                                                                            f" with parameters: Title: {title}\n"
+                                                                            f"Exception: {e}")
             return False
         except Exception as e:
-            log.warning(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"Failed to delete Diary"
-                                                                       f" with parameters: Title: {title}. Exception: "
-                                                                       f"{e}")
+            log.warning(datetime.now().strftime(self.cfg.log_time_format) + f" - Failed to delete Diary"
+                                                                            f" with parameters: Title: {title}. Exception: "
+                                                                            f"{e}")
             raise e
         else:
-            log.info(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"Deleted Diary"
-                                                                       f" with title: {title}")
+            log.info(datetime.now().strftime(self.cfg.log_time_format) + f" - Deleted Diary"
+                                                                         f" with title: {title}")
             return True
