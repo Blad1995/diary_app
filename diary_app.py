@@ -5,8 +5,6 @@ import os as os
 import pickle as pickle
 from datetime import datetime
 
-import yaml as yaml
-
 from config import DiaryConfig
 # my modules
 from diary_owner import Owner
@@ -86,11 +84,7 @@ class Diary:
     def set_config_first_use_false(self):
         # No exception should occur. This property of cfg was already addressed.
         self.cfg.first_use = False
-        try:
-            with open("config.yml", "wb") as f:
-                yaml.dump(data=self.cfg, stream=f)
-        except IOError as e:
-            log.error(datetime.now().strftime(self.cfg.log_time_format) + f"Error writing to config.yml file. {e}")
+        self.cfg.save_config_to_disc()
 
 
 if __name__ == "__main__":

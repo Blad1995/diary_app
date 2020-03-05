@@ -8,6 +8,8 @@ import pyperclip as ppc
 __LOG_TIME_FORMAT = "%d.%m.%Y-%H:%M:%S"
 
 
+# TODO config
+
 class DiaryRecord:
     __IMPORT_PATTERN = r"^(\d{1,2}\. \d{1,2}\. \d{4}) – (.+): (.+)$"
 

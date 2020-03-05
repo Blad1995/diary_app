@@ -1,6 +1,6 @@
 diary:
-    dir_path: "./data/"
-    owner_login_file_name: "owners_logins.Ddata"
+  dir_path: ./data/
+  owner_login_file_name: owners_logins.Ddata
 general:
-    first_use: True
-    log_time_format: "%d.%m.%Y-%H:%M:%S"
+  first_use: false
+  log_time_format: '%d.%m.%Y-%H:%M:%S'
