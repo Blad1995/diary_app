@@ -4,14 +4,12 @@ from datetime import datetime
 
 import pyperclip as ppc
 
-# GLOBAL CONFIG variables
-__LOG_TIME_FORMAT = "%d.%m.%Y-%H:%M:%S"
+from config import DiaryConfig
 
-
-# TODO config
 
 class DiaryRecord:
     __IMPORT_PATTERN = r"^(\d{1,2}\. \d{1,2}\. \d{4}) – (.+): (.+)$"
+    cfg = DiaryConfig
 
     def __init__(self, date: datetime, title: str, text: str, date_of_creation = None):
         self.__date = date
@@ -22,7 +20,7 @@ class DiaryRecord:
         # self.__history_of_changes = {}
         # self.__list_of_media = []
 
-        log.info(datetime.now().strftime(DiaryRecord.__LOG_TIME_FORMAT) + f" - Diary Record was created: {str(self)}")
+        log.info(datetime.now().strftime(DiaryRecord.cfg.log_time_format) + f" - Diary Record was created: {str(self)}")
 
     # ↓Setters and getters ----------------------------------------------------------
     @property
@@ -88,7 +86,7 @@ class DiaryRecord:
         self.__date = self.__date if date is None else date
         self.__list_of_alteration_dates.append(datetime.now() if alteration_date is None else alteration_date)
 
-        log.info(datetime.now().strftime(DiaryRecord.__LOG_TIME_FORMAT) + f" - Diary Record was updated: {str(self)}")
+        log.info(datetime.now().strftime(DiaryRecord.cfg.log_time_format) + f" - Diary Record was updated: {str(self)}")
 
     def __str__(self):
         date_str = self.__date.strftime("%d. %m. %Y")
@@ -124,7 +122,7 @@ class DiaryRecord:
             # Assign each parsed group to corresponding variable
             date, title, text = parsed_text.groups()
 
-            log.info(datetime.now().strftime(DiaryRecord.__LOG_TIME_FORMAT) + f" - Imported text was parsed as: {parsed_text.groups()}")
+            log.info(datetime.now().strftime(DiaryRecord.cfg.log_time_format) + f" - Imported text was parsed as: {parsed_text.groups()}")
             return DiaryRecord(date=date, title=title, text=text)
         else:
             raise ValueError(f"Format of the text to import is invalid. Expected format:\n{DiaryRecord.__IMPORT_PATTERN}")

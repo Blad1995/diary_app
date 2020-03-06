@@ -2,15 +2,20 @@ import logging as log
 import os as os
 from datetime import datetime
 
+# my modules
+from config import DiaryConfig
+
 
 class Diary:
+    cfg = DiaryConfig
+
     def __init__(self, title: str, date_of_creation: datetime = None, list_of_records: dict = None, bio: str = None):
         self.title = title
         self.date_of_creation = date_of_creation if date_of_creation else datetime.today()
         self.list_of_records = list_of_records if list_of_records else []
         self.bio = bio
         self.list_of_removed_records = []
-        log.info(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"Diary was created {str(self)}")
+        log.info(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") + f"Diary was created {str(self)}")
 
     def __str__(self):
         date_str = self.date_of_creation.strftime("%d. %m. %Y")
@@ -37,5 +42,5 @@ class Diary:
                         })
                 f.write(payload)
         except IOError as e:
-            log.error(datetime.now().strftime("%d.%m.%Y-%H:%M:%S - ") + f"Error writing to {file_path}. {e}")
+            log.error(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") + f"Error writing to {file_path}. {e}")
             raise e
