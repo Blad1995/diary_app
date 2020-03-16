@@ -23,7 +23,7 @@ class Diary:
         return string
 
     def delete_record(self, record_id: int):
-        if self.dict_of_records.get(record_id, default=None):
+        if record_id in self.dict_of_records:
             self.dict_of_removed_records.update(self.dict_of_records.pop(record_id))
         else:
             log.warning(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") + f"No such record with id = {record_id} in diary {str(self)}")
