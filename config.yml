@@ -1,4 +1,4 @@
 dir_path: ./data/
-first_use: false
+first_use: true
 log_time_format: '%d.%m.%Y-%H:%M:%S'
 owner_login_file_name: owners_logins.Ddata
