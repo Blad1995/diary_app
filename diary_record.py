@@ -11,7 +11,8 @@ class DiaryRecord:
     __IMPORT_PATTERN = r"^(\d{1,2}\. \d{1,2}\. \d{4}) – (.+): (.+)$"
     cfg = DiaryConfig
 
-    def __init__(self, date: datetime, title: str, text: str, date_of_creation = None):
+    def __init__(self, id: int, date: datetime, title: str, text: str, date_of_creation = None):
+        self.id = id
         self.__date = date
         self.__title = title
         self.__text = text
@@ -111,18 +112,18 @@ class DiaryRecord:
         pass
 
     @classmethod
-    def import_from_text(cls, text: str) -> "DiaryRecord":
+    def import_from_text(cls, text: str, new_id: int) -> "DiaryRecord":
         """
         :param cls: DiaryRecord class
         :param text: Text from which the info about DiaryRecord would be extracted.
         :return: new DiaryRecord instance
         """
-        if re.search(DiaryRecord.__IMPORT_PATTERN,   text):
+        if re.search(DiaryRecord.__IMPORT_PATTERN, text):
             parsed_text = re.match(DiaryRecord.__IMPORT_PATTERN, text)
             # Assign each parsed group to corresponding variable
             date, title, text = parsed_text.groups()
 
             log.info(datetime.now().strftime(DiaryRecord.cfg.log_time_format) + f" - Imported text was parsed as: {parsed_text.groups()}")
-            return DiaryRecord(date=date, title=title, text=text)
+            return DiaryRecord(id=new_id, date=date, title=title, text=text)
         else:
             raise ValueError(f"Format of the text to import is invalid. Expected format:\n{DiaryRecord.__IMPORT_PATTERN}")
