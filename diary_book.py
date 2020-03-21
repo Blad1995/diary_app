@@ -41,7 +41,7 @@ class Diary:
                         'title': self.title,
                         'date_of_creation': self.date_of_creation.strftime(self.cfg.date_format),
                         'bio': self.bio,
-                        # TODO test if this str conversion works
+                        # TODO optimize this (now it uses __repr__ of DiaryRecord
                         'records': self.dict_of_records
                         })
                 f.write(payload)

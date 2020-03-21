@@ -1,12 +1,12 @@
+import unittest as ut
 from datetime import datetime
 from os import path
-from unittest import TestCase
 
 from config import DiaryConfig
 from diary_book import Diary
 
 
-class TestDiary(TestCase):
+class TestDiary(ut.TestCase):
     def __init__(self, *args, **kwargs):
         super(TestDiary, self).__init__(*args, **kwargs)
         DiaryConfig.load("../")
