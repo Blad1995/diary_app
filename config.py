@@ -10,11 +10,12 @@ class DiaryConfig:
     first_use: bool = None
     log_time_format: str = None
     owner_login_file_name: str = None
+    date_format: str = None
     __keys = []
 
     @classmethod
-    def load(cls):
-        with open(cls.__config_path, mode="r") as f:
+    def load(cls, config_path = "./"):
+        with open(config_path + cls.__config_path, mode="r") as f:
             cfg = yaml.safe_load(f)
         if not cfg:
             raise RuntimeError("Cannot find config file.")
@@ -26,6 +27,7 @@ class DiaryConfig:
             cls.first_use = cfg["first_use"]
             cls.log_time_format = cfg['log_time_format']
             cls.owner_login_file_name = cfg["owner_login_file_name"]
+            cls.date_format = cfg["date_format"]
         except KeyError as ke:
             log.error(datetime.now().strftime("%d.%m.%Y-%H:%M:%S") + f" - Unknown error in config file. {ke}")
             raise RuntimeError(f"Config file has been corrupted. {ke}")

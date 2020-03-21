@@ -33,13 +33,13 @@ class Diary:
     def export_to_txt(self, destination: str):
         if not os.path.isdir(destination):
             raise FileNotFoundError(f"{destination} is not a valid directory.")
-        file_path = destination.rstrip("/") + "/" + f'{self.title.lower()}_{self.date_of_creation}.txt'
+        file_path = destination.rstrip("/") + "/" + f'{self.title.lower()}_{self.date_of_creation.strftime(self.cfg.date_format)}.txt'
         try:
             with open(file_path, 'w') as f:
                 payload = str(
                     {
                         'title': self.title,
-                        'date_of_creation': self.date_of_creation,
+                        'date_of_creation': self.date_of_creation.strftime(self.cfg.date_format),
                         'bio': self.bio,
                         # TODO test if this str conversion works
                         'records': self.dict_of_records
