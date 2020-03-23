@@ -16,19 +16,20 @@ class Diary:
         self.dict_of_records = dict_of_records if dict_of_records else {}
         self.bio = bio
         self.dict_of_removed_records = {}
-        self.last_id: int = max(dict_of_records.keys()) if dict_of_records else 0
+        self.last_id: int = max(dict_of_records.keys()) if dict_of_records else None
         log.info(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") + f"Diary was created {str(self)}")
 
     def __str__(self):
         date_str = self.date_of_creation.strftime("%d. %m. %Y")
-        string = f"Title: {self.title} created on {date_str}"
+        string = f"Title: {self.title}, created on {date_str}"
         return string
 
     def delete_record(self, record_id: int):
         if record_id in self.dict_of_records:
-            self.dict_of_removed_records.update(self.dict_of_records.pop(record_id))
+            self.dict_of_removed_records[record_id] = self.dict_of_records.pop(record_id)
         else:
             log.warning(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") + f"No such record with id = {record_id} in diary {str(self)}")
+            raise ValueError(f"Diary record number {record_id} doesn't exist")
 
     def export_to_txt(self, destination: str):
         if not os.path.isdir(destination):
@@ -54,7 +55,11 @@ class Diary:
         assert type(title) == str
         assert type(text) == str
 
-        self.last_id += 1
+        if self.last_id is None:
+            self.last_id = 0
+        else:
+            self.last_id += 1
+
         if self.dict_of_records.get(self.last_id, None):
             # If record with this id already exist (it shouldn't) reset the counter
             self.last_id = max(self.dict_of_records.keys())
@@ -67,6 +72,10 @@ class Diary:
             log.debug(f"Parameters of Diary.create_record: Title:{title}, date_of_record: {date_of_record}, text={text}")
             raise e
 
-    def update_record(self):
-        # TODO update
-        pass
+    def update_record(self, record_id: int, date_of_record: datetime = None, text: str = None, title: str = None):
+        record_to_update: DiaryRecord = self.dict_of_records.get(record_id, None)
+        if record_to_update:
+            record_to_update.update(date=date_of_record, text=text, title=title)
+        else:
+            log.warning(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") + f"No such diary record with id = {record_id}")
+            raise ValueError(f"Diary record number {record_id} doesn't exist")

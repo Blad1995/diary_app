@@ -63,6 +63,7 @@ class DiaryRecord:
     @list_of_alteration_dates.setter
     def list_of_alteration_dates(self, new_date: datetime):
         self.__list_of_alteration_dates.append(new_date)
+
     # ↑ Getters and setters _______________________________________
 
     def update(self, date: datetime = None, text: str = None, title: str = None, alteration_date: datetime = None) -> None:
@@ -75,12 +76,12 @@ class DiaryRecord:
         :return: Nothing.
         """
         # check proper data types
-        assert type(text) == str, f"Parameter provided for 'text' is not suitable." \
-                                  f" Text should be 'string'. Given parameter is: '{type(text)}'"
-        assert type(title) == str, f"Parameter provided for 'title' is not suitable." \
-                                   f" Title should be 'string'. Given parameter is: '{type(title)}'"
-        assert type(date) == datetime, f"Parameter provided for 'date' is not suitable." \
-                                       f" Date should be 'datetime'. Given parameter is: '{type(date)}'"
+        assert type(text) in [type(None), str], f"Parameter provided for 'text' is not suitable." \
+                                                f" Text should be 'string'. Given parameter is: '{type(text)}'"
+        assert type(title) in [type(None), str], f"Parameter provided for 'title' is not suitable." \
+                                                 f" Title should be 'string'. Given parameter is: '{type(title)}'"
+        assert type(date) in [type(None), datetime], f"Parameter provided for 'date' is not suitable." \
+                                                     f" Date should be 'datetime'. Given parameter is: '{type(date)}'"
 
         self.__title = self.__title if title is None else title
         self.__text = self.__text if text is None else text
@@ -116,6 +117,7 @@ class DiaryRecord:
         """
         :param cls: DiaryRecord class
         :param text: Text from which the info about DiaryRecord would be extracted.
+        :param new_id: id to assign to newly created DiaryRecord
         :return: new DiaryRecord instance
         """
         if re.search(DiaryRecord.__IMPORT_PATTERN, text):
