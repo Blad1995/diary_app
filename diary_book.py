@@ -8,9 +8,20 @@ from diary_record import DiaryRecord
 
 
 class Diary:
+    """
+    Class representing whole Diary book.
+    :var cfg: class variable for storing loaded config file.
+    """
     cfg = DiaryConfig
 
     def __init__(self, title: str, date_of_creation: datetime = None, dict_of_records: dict = None, bio: str = None):
+        """
+        Initialize Diary class.
+        :param title: Title of the whole Diary book.
+        :param date_of_creation: Date when the Diary was created.
+        :param dict_of_records: dictionary containing all existing DiaryRecords.
+        :param bio: Short summary about the Diary book.
+        """
         self.title = title
         self.date_of_creation = date_of_creation if date_of_creation else datetime.today()
         self.dict_of_records = dict_of_records if dict_of_records else {}
@@ -34,7 +45,7 @@ class Diary:
     def export_to_txt(self, destination: str):
         """
         Export whole Diary with records to txt
-        :param destination:
+        :param destination: Folder path where the result should be written.
         """
         if not os.path.isdir(destination):
             raise FileNotFoundError(f"{destination} is not a valid directory.")
@@ -59,15 +70,16 @@ class Diary:
 
     def create_record(self, date_of_record: datetime, title: str, text: str, date_of_creation: datetime = None):
         """
-        Creates new record and adds it to the dict_of_records. Raise exception if only something unexpected happens. Accepts parameters of the strict type.
+        Creates new record and adds it to the dict_of_records. Raise exception if only something unexpected happens.
+        Accepts parameters of the strict type.
         :type date_of_creation: datetime
         :type text: str
         :type title: str
         :type date_of_record: datetime
-        :param date_of_record:
-        :param title:
-        :param text:
-        :param date_of_creation:
+        :param date_of_record: Date of the record. The day which the record is about.
+        :param title: Title of the diary record.
+        :param text: Text of the record. Can be multi-line
+        :param date_of_creation: Date of creation of the record. In default takes system datetime
         """
         assert type(date_of_record) == datetime
         assert type(title) == str
