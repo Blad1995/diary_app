@@ -42,9 +42,12 @@ class Diary:
                         'title': self.title,
                         'date_of_creation': self.date_of_creation.strftime(self.cfg.date_format),
                         'bio': self.bio,
-                        # TODO optimize this (now it uses __repr__ of DiaryRecord
-                        'records': self.dict_of_records
+                        'records': "\n"
                         })
+                for record in self.dict_of_records.values():
+                    payload += "___________________\n"
+                    payload += f"{record}"
+                    payload += "\n"
                 f.write(payload)
         except IOError as e:
             log.error(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") + f"Error writing to {file_path}. {e}")
