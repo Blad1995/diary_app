@@ -5,6 +5,7 @@ from datetime import datetime
 # my modules
 from config import DiaryConfig
 from diary_record import DiaryRecord
+from two_way_dict import TwoWayDict
 
 
 class Diary:
@@ -27,6 +28,7 @@ class Diary:
         self.dict_of_records = dict_of_records if dict_of_records else {}
         self.bio = bio
         self.dict_of_removed_records = {}
+        self.id_date_relation_dict = TwoWayDict()
         self.last_id: int = max(dict_of_records.keys()) if dict_of_records else None
         log.info(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") + f"Diary was created {str(self)}")
 
@@ -38,6 +40,7 @@ class Diary:
     def delete_record(self, record_id: int):
         if record_id in self.dict_of_records:
             self.dict_of_removed_records[record_id] = self.dict_of_records.pop(record_id)
+            del self.id_date_relation_dict[record_id]
         else:
             log.warning(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") + f"No such record with id = {record_id} in diary {str(self)}")
             raise ValueError(f"Diary record number {record_id} doesn't exist")
@@ -96,7 +99,12 @@ class Diary:
             log.warning(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") + f"id: {self.last_id} is already taken! last_id counter was reset")
 
         try:
-            self.dict_of_records[self.last_id] = DiaryRecord(id=self.last_id, date=date_of_record, title=title, text=text, date_of_creation=date_of_creation)
+            self.dict_of_records[self.last_id] = DiaryRecord(id=self.last_id,
+                                                             date=date_of_record,
+                                                             title=title,
+                                                             text=text,
+                                                             date_of_creation=date_of_creation)
+            self.id_date_relation_dict[self.last_id] = date_of_record
         except Exception as e:
             log.error(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") + f"Unexpected error when creating the record in Diary. {e}")
             log.debug(f"Parameters of Diary.create_record: Title:{title}, date_of_record: {date_of_record}, text={text}")
