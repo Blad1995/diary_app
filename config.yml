@@ -3,3 +3,4 @@ first_use: true
 log_time_format: '%d.%m.%Y-%H:%M:%S'
 owner_login_file_name: owners_logins.Ddata
 date_format: "%Y-%m-%d"
+natural_date_format: "%d. %m. %Y"

@@ -91,7 +91,7 @@ class DiaryRecord:
         log.info(datetime.now().strftime(DiaryRecord.cfg.log_time_format) + f" - Diary Record was updated: {str(self)}")
 
     def __str__(self):
-        date_str = self.__date.strftime("%d. %m. %Y")
+        date_str = self.__date.strftime(self.cfg.natural_date_format)
         return f"{date_str} – {self.__title}: {self.__text}"
 
     def __repr__(self):
@@ -110,7 +110,7 @@ class DiaryRecord:
 
     def export(self):
         # todo export - možná bude  jen ta __str__ reprezentace
-        pass
+        raise NotImplementedError
 
     @classmethod
     def import_from_text(cls, text: str, new_id: int) -> "DiaryRecord":
@@ -126,6 +126,6 @@ class DiaryRecord:
             date, title, text = parsed_text.groups()
 
             log.info(datetime.now().strftime(DiaryRecord.cfg.log_time_format) + f" - Imported text was parsed as: {parsed_text.groups()}")
-            return DiaryRecord(id=new_id, date=date, title=title, text=text)
+            return DiaryRecord(id=new_id, date=datetime.strptime(date, cls.cfg.date_format), title=title, text=text)
         else:
             raise ValueError(f"Format of the text to import is invalid. Expected format:\n{DiaryRecord.__IMPORT_PATTERN}")
