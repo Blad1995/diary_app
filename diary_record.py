@@ -21,7 +21,8 @@ class DiaryRecord:
         # self.__history_of_changes = {}
         # self.__list_of_media = []
 
-        log.info(datetime.now().strftime(DiaryRecord.cfg.log_time_format) + f" - Diary Record was created: {str(self)}")
+        log.info(datetime.now().strftime(DiaryRecord.cfg.log_time_format) +
+                 f" - Diary Record was created: {str(self)}")
 
     # ↓Setters and getters ----------------------------------------------------------
     @property
@@ -88,7 +89,8 @@ class DiaryRecord:
         self.__date = self.__date if date is None else date
         self.__list_of_alteration_dates.append(datetime.now() if alteration_date is None else alteration_date)
 
-        log.info(datetime.now().strftime(DiaryRecord.cfg.log_time_format) + f" - Diary Record was updated: {str(self)}")
+        log.info(datetime.now().strftime(DiaryRecord.cfg.log_time_format) +
+                 f" - Diary Record was updated: {str(self)}")
 
     def __str__(self):
         date_str = self.__date.strftime(self.cfg.natural_date_format)
@@ -125,7 +127,8 @@ class DiaryRecord:
             # Assign each parsed group to corresponding variable
             date, title, text = parsed_text.groups()
 
-            log.info(datetime.now().strftime(DiaryRecord.cfg.log_time_format) + f" - Imported text was parsed as: {parsed_text.groups()}")
+            log.info(datetime.now().strftime(DiaryRecord.cfg.log_time_format) +
+                     f" - Imported text was parsed as: {parsed_text.groups()}")
             return DiaryRecord(id=new_id, date=datetime.strptime(date, cls.cfg.date_format), title=title, text=text)
         else:
             raise ValueError(f"Format of the text to import is invalid. Expected format:\n{DiaryRecord.__IMPORT_PATTERN}")

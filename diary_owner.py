@@ -33,7 +33,8 @@ class Owner:
             )
         self.__dict_of_diaries = {}
         self.__bio = kwargs.get("bio", None)
-        log.info(datetime.now().strftime(Owner.cfg.log_time_format) + f" - New instance of owner was created. {str(self)}")
+        log.info(datetime.now().strftime(Owner.cfg.log_time_format) +
+                 f" - New instance of owner was created. {str(self)}")
 
     @property
     def login(self):
@@ -53,8 +54,9 @@ class Owner:
             try:
                 setattr(self.__info, key, value)
             except AttributeError as e:
-                log.warning(datetime.now().strftime(Owner.cfg.log_time_format) + f" - Invalid argument provided for info.setter in Owner - "
-                                                                                 f"{e}")
+                log.warning(datetime.now().strftime(Owner.cfg.log_time_format) +
+                            f" - Invalid argument provided for info.setter in Owner - "
+                            f"{e}")
 
     @property
     def bio(self):

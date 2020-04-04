@@ -29,7 +29,8 @@ class OwnerInfo:
         # should be constant after creation
         self.__date_joined = date_joined if date_joined else datetime.now()
         self.__last_active = self.__date_joined
-        log.info(datetime.now().strftime(OwnerInfo.cfg.log_time_format) + f" - New instance of owner info was created. {str(self)}")
+        log.info(datetime.now().strftime(OwnerInfo.cfg.log_time_format) +
+                 f" - New instance of owner info was created. {str(self)}")
 
     # Name setters & getters
     @property
@@ -38,7 +39,8 @@ class OwnerInfo:
 
     @name.setter
     def name(self, name):
-        log.info(datetime.now().strftime(OwnerInfo.cfg.log_time_format) + f" - Name of the owner was updated from '{self.name}' to '{name}'")
+        log.info(datetime.now().strftime(OwnerInfo.cfg.log_time_format) +
+                 f" - Name of the owner was updated from '{self.name}' to '{name}'")
         self.__name = name
 
     # Photo setters & getters
@@ -48,7 +50,8 @@ class OwnerInfo:
 
     @photo.setter
     def photo(self, photo):
-        log.info(datetime.now().strftime(OwnerInfo.cfg.log_time_format) + f" - Photo of the owner was updated.'")
+        log.info(datetime.now().strftime(OwnerInfo.cfg.log_time_format) +
+                 f" - Photo of the owner was updated.'")
         self.__photo = photo
 
     # email setters & getters
@@ -58,7 +61,8 @@ class OwnerInfo:
 
     @email.setter
     def email(self, email):
-        log.info(datetime.now().strftime(OwnerInfo.cfg.log_time_format) + f" - Email of the owner {self.name} was updated from '{self.email}' to '{email}'")
+        log.info(datetime.now().strftime(OwnerInfo.cfg.log_time_format) +
+                 f" - Email of the owner {self.name} was updated from '{self.email}' to '{email}'")
         self.__email = email
 
     # password setters & getters
@@ -68,7 +72,8 @@ class OwnerInfo:
 
     @password.setter
     def password(self, password):
-        log.info(datetime.now().strftime(OwnerInfo.cfg.log_time_format) + f" - Password of the owner {self.name} was updated.'")
+        log.info(datetime.now().strftime(OwnerInfo.cfg.log_time_format) +
+                 f" - Password of the owner {self.name} was updated.'")
         self.__password = password
 
     @property
@@ -77,7 +82,8 @@ class OwnerInfo:
 
     @last_active.setter
     def last_active(self, last_active):
-        log.debug(datetime.now().strftime(OwnerInfo.cfg.log_time_format) + f" - Last active variable of the owner {self.name} was updated from '{self.last_active}' to '{last_active}'")
+        log.debug(datetime.now().strftime(OwnerInfo.cfg.log_time_format) +
+                  f" - Last active variable of the owner {self.name} was updated from '{self.last_active}' to '{last_active}'")
         self.__last_active = last_active
 
     @property

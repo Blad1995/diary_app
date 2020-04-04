@@ -30,7 +30,8 @@ class Diary:
         self.dict_of_removed_records = {}
         self.id_date_relation_dict = TwoWayDict()
         self.last_id: int = max(dict_of_records.keys()) if dict_of_records else None
-        log.info(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") + f"Diary was created {str(self)}")
+        log.info(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") +
+                 f"Diary was created {str(self)}")
 
     def __str__(self):
         date_str = self.date_of_creation.strftime("%d. %m. %Y")
@@ -42,7 +43,8 @@ class Diary:
             self.dict_of_removed_records[record_id] = self.dict_of_records.pop(record_id)
             del self.id_date_relation_dict[record_id]
         else:
-            log.warning(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") + f"No such record with id = {record_id} in diary {str(self)}")
+            log.warning(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") +
+                        f"No such record with id = {record_id} in diary {str(self)}")
             raise ValueError(f"Diary record number {record_id} doesn't exist")
 
     def export_to_txt(self, destination: str):
@@ -68,7 +70,8 @@ class Diary:
                     payload += "\n"
                 f.write(payload)
         except IOError as e:
-            log.error(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") + f"Error writing to {file_path}. {e}")
+            log.error(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") +
+                      f"Error writing to {file_path}. {e}")
             raise e
 
     def create_record(self, date_of_record: datetime, title: str, text: str, date_of_creation: datetime = None):
@@ -96,7 +99,8 @@ class Diary:
         if self.dict_of_records.get(self.last_id, None):
             # If record with this id already exist (it shouldn't) reset the counter
             self.last_id = max(self.dict_of_records.keys())
-            log.warning(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") + f"id: {self.last_id} is already taken! last_id counter was reset")
+            log.warning(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") +
+                        f"id: {self.last_id} is already taken! last_id counter was reset")
 
         try:
             self.dict_of_records[self.last_id] = DiaryRecord(id=self.last_id,
@@ -106,7 +110,8 @@ class Diary:
                                                              date_of_creation=date_of_creation)
             self.id_date_relation_dict[self.last_id] = date_of_record
         except Exception as e:
-            log.error(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") + f"Unexpected error when creating the record in Diary. {e}")
+            log.error(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") +
+                      f"Unexpected error when creating the record in Diary. {e}")
             log.debug(f"Parameters of Diary.create_record: Title:{title}, date_of_record: {date_of_record}, text={text}")
             raise e
 
@@ -122,5 +127,6 @@ class Diary:
         if record_to_update:
             record_to_update.update(date=date_of_record, text=text, title=title)
         else:
-            log.warning(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") + f"No such diary record with id = {record_id}")
+            log.warning(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") +
+                        f"No such diary record with id = {record_id}")
             raise ValueError(f"Diary record number {record_id} doesn't exist")
