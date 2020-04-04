@@ -32,6 +32,10 @@ class Diary:
             raise ValueError(f"Diary record number {record_id} doesn't exist")
 
     def export_to_txt(self, destination: str):
+        """
+        Export whole Diary with records to txt
+        :param destination:
+        """
         if not os.path.isdir(destination):
             raise FileNotFoundError(f"{destination} is not a valid directory.")
         file_path = destination.rstrip("/") + "/" + f'{self.title.lower()}_{self.date_of_creation.strftime(self.cfg.date_format)}.txt'
@@ -54,6 +58,17 @@ class Diary:
             raise e
 
     def create_record(self, date_of_record: datetime, title: str, text: str, date_of_creation: datetime = None):
+        """
+        Creates new record and adds it to the dict_of_records. Raise exception if only something unexpected happens. Accepts parameters of the strict type.
+        :type date_of_creation: datetime
+        :type text: str
+        :type title: str
+        :type date_of_record: datetime
+        :param date_of_record:
+        :param title:
+        :param text:
+        :param date_of_creation:
+        """
         assert type(date_of_record) == datetime
         assert type(title) == str
         assert type(text) == str
@@ -76,6 +91,13 @@ class Diary:
             raise e
 
     def update_record(self, record_id: int, date_of_record: datetime = None, text: str = None, title: str = None):
+        """
+        Updates information about the record identified by given record_id. Raises ValueError if no such record found.
+        :param record_id: id of the record to be updated
+        :param date_of_record: new date of the record
+        :param text: new text of the record
+        :param title: new title of the record
+        """
         record_to_update: DiaryRecord = self.dict_of_records.get(record_id, None)
         if record_to_update:
             record_to_update.update(date=date_of_record, text=text, title=title)
