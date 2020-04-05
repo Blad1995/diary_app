@@ -1,7 +1,7 @@
 from datetime import datetime
 from unittest import TestCase
 
-from two_way_dict import TwoWayDict
+from backend_scripts.two_way_dict import TwoWayDict
 
 
 class TestTwoWayDict(TestCase):

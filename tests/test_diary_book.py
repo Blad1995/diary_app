@@ -2,9 +2,9 @@ import unittest as ut
 from datetime import datetime
 from os import path
 
+from backend_scripts.diary_book import Diary
+from backend_scripts.diary_record import DiaryRecord
 from config import DiaryConfig
-from diary_book import Diary
-from diary_record import DiaryRecord
 
 
 class TestDiary(ut.TestCase):

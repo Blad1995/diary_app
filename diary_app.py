@@ -5,9 +5,9 @@ import os as os
 import pickle as pickle
 from datetime import datetime
 
-from config import DiaryConfig
 # my modules
-from diary_owner import Owner
+from backend_scripts.diary_owner import Owner
+from config import DiaryConfig
 
 
 class DiaryApp:
@@ -91,6 +91,7 @@ if __name__ == "__main__":
     app_config = DiaryConfig
     app_config.load()
     main_app = DiaryApp()
+    # TODO celé rozhraní
     if main_app.cfg.first_use:
         print("First use was used")
         main_app.owners.append(Owner(login="Blad", password="Heslo století"))

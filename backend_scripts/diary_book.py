@@ -2,10 +2,10 @@ import logging as log
 import os as os
 from datetime import datetime
 
+from backend_scripts.diary_record import DiaryRecord
+from backend_scripts.two_way_dict import TwoWayDict
 # my modules
 from config import DiaryConfig
-from diary_record import DiaryRecord
-from two_way_dict import TwoWayDict
 
 
 class Diary:

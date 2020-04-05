@@ -1,9 +1,9 @@
 import logging as log
 from datetime import datetime
 
+from backend_scripts.diary_book import Diary
+from backend_scripts.diary_owner_info import OwnerInfo
 from config import DiaryConfig
-from diary_book import Diary
-from diary_owner_info import OwnerInfo
 
 
 class Owner:
