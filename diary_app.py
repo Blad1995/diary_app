@@ -39,6 +39,20 @@ class DiaryApp:
     def create_owner(self, login: str, password: str, **kwargs):
         self.__owners.append(Owner(login=login, password=password, **kwargs))
 
+    def delete_owner_by_login(self, del_login: str):
+        del_id = None
+        for i, owner in enumerate(self.owners):
+            if owner.login == del_login:
+                del_id = i
+        if del_id:
+            del self.owners[del_id]
+            log.info(datetime.now().strftime(DiaryApp.cfg.log_time_format) +
+                     f"Owner login = {del_login} was deleted")
+        else:
+            log.error(datetime.now().strftime(DiaryApp.cfg.log_time_format) +
+                      f"Owner login = {del_login} was not found.")
+            raise ValueError(f"Owner login = {del_login} was not found.")
+
     def save_data_to_disc(self):
         # check path where to store data from config file
         # make directory if needed
