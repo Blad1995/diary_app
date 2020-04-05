@@ -12,6 +12,7 @@ class DiaryConfig:
     owner_login_file_name: str = None
     date_format: str = None
     natural_date_format: str = None
+    data_extension: str = None
     __keys = []
 
     @classmethod
@@ -30,6 +31,7 @@ class DiaryConfig:
             cls.owner_login_file_name = cfg["owner_login_file_name"]
             cls.date_format = cfg["date_format"]
             cls.natural_date_format = cfg["natural_date_format"]
+            cls.data_extension = cfg["data_extension"]
         except KeyError as ke:
             log.error(datetime.now().strftime("%d.%m.%Y-%H:%M:%S") + f" - Unknown error in config file. {ke}")
             raise RuntimeError(f"Config file has been corrupted. {ke}")

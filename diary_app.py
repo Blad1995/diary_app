@@ -16,6 +16,7 @@ class DiaryApp:
     def __init__(self):
         self.owners = []
         self.active_owner = None
+        self.owner_logins = None
 
     def save_data_to_disc(self):
         # check path where to store data from config file
@@ -26,7 +27,7 @@ class DiaryApp:
         owners_logins = [o.login for o in self.owners]
         # Saves every Owner separately
         for o_index, login in enumerate(owners_logins):
-            owner_file_path = DiaryApp.cfg.dir_path + login + ".Ddata"
+            owner_file_path = DiaryApp.cfg.dir_path + login + DiaryApp.cfg.data_extension
             try:
                 with open(owner_file_path, mode="wb") as f:
                     pickle.dump(obj=self.owners[o_index], file=f, protocol=pickle.HIGHEST_PROTOCOL)
@@ -49,6 +50,19 @@ class DiaryApp:
             raise RuntimeError(f"Can't open the file {owner_path} to save data.")
 
     def load_all_data_from_disc(self):
+        self.owner_logins = DiaryApp.load_owners_names_from_disk()
+        # load all data about owners
+        for o_index, login in enumerate(self.owner_logins):
+            self.owners.append(DiaryApp.load_owner_from_disk(login))
+
+    @classmethod
+    def set_config_first_use_false(cls):
+        # No exception should occur. This property of cfg was already addressed.
+        cls.cfg.first_use = False
+        cls.cfg.save()
+
+    @classmethod
+    def load_owners_names_from_disk(cls):
         try:
             # tries to find Owner logins file path in config file
             owner_path = DiaryApp.cfg.dir_path + DiaryApp.cfg.owner_login_file_name
@@ -67,24 +81,18 @@ class DiaryApp:
             log.error(datetime.now().strftime(DiaryApp.cfg.log_time_format) + f"Error reading {owner_path} file. {e}")
             raise RuntimeError(f"Can't load the data from {owner_path}.")
 
-        # load all data about owners
-        # FIXME do budoucna možná bude potřeba předělat na samostatné načítání po jednom Ownerovi -->
-        #  paměťové nároky na načtení všech dat vs jednoho Ownera
-        for o_index, login in enumerate(owners_logins):
-            owner_file_path = DiaryApp.cfg.dir_path + login + ".Ddata"
-            try:
-                with open(owner_file_path, mode="rb") as f:
-                    new_owner = pickle.load(file=f)
-                    self.owners.append(new_owner)
-            except IOError as e:
-                log.error(datetime.now().strftime(DiaryApp.cfg.log_time_format) + f"Error writing to {owner_path} file. {e}")
-                raise RuntimeError(f"Can't open the file {owner_file_path} to save data.")
+        return owners_logins
 
     @classmethod
-    def set_config_first_use_false(cls):
-        # No exception should occur. This property of cfg was already addressed.
-        cls.cfg.first_use = False
-        cls.cfg.save()
+    def load_owner_from_disk(cls, login):
+        owner_file_path = cls.cfg.dir_path + login + DiaryApp.cfg.data_extension
+        try:
+            with open(owner_file_path, mode="rb") as f:
+                new_owner = pickle.load(file=f)
+        except IOError as e:
+            log.error(datetime.now().strftime(cls.cfg.log_time_format) + f"Error reading from {owner_file_path} file. {e}")
+            raise RuntimeError(f"Can't open the file {owner_file_path} to save data.")
+        return new_owner
 
 
 if __name__ == "__main__":
