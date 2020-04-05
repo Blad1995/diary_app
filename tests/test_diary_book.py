@@ -88,13 +88,13 @@ class TestDiary(ut.TestCase):
         test_diary.create_record(date_of_record=datetime(2002, 12, 1), title="myTitle", text="whatever\nsomething")
 
         # Record exists
-        self.assertIsNotNone(test_diary.__id_date_relation_dict.get(1))
-        self.assertEqual(test_diary.__id_date_relation_dict.get(1), datetime(2001, 12, 1))
-        self.assertIsInstance(test_diary.__id_date_relation_dict.get(0), datetime)
+        self.assertIsNotNone(test_diary.get_date_for_given_id(1))
+        self.assertEqual(test_diary.get_date_for_given_id(1), datetime(2001, 12, 1))
+        self.assertIsInstance(test_diary.get_date_for_given_id(0), datetime)
 
         # Delete record
-        del_id = test_diary.__id_date_relation_dict[datetime(2000, 12, 1)]
+        del_id = test_diary.get_id_for_given_date(datetime(2000, 12, 1))
         test_diary.delete_record(del_id)
         self.assertIsNone(test_diary.dict_of_records.get(del_id))
-        self.assertIsNone(test_diary.__id_date_relation_dict.get(del_id))
+        self.assertIsNone(test_diary.get_date_for_given_id(del_id))
         self.assertIsInstance(test_diary.dict_of_removed_records.get(del_id), DiaryRecord)
