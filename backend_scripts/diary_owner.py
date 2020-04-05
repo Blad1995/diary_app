@@ -76,6 +76,9 @@ class Owner:
         else:
             raise PermissionError("Old password is not valid.")
 
+    def is_password_valid(self, pswd_to_check: str):
+        return self.info.is_password_valid(pswd_to_check)
+
     def create_diary(self, title: str, bio = None):
         """
         Create new Diary and add it to database of Diaries of the Owner
