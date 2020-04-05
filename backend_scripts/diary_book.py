@@ -119,24 +119,24 @@ class Diary:
         assert type(title) == str
         assert type(text) == str
 
-        if self.last_id is None:
-            self.last_id = 0
+        if self.__last_id is None:
+            self.__last_id = 0
         else:
-            self.last_id += 1
+            self.__last_id += 1
 
-        if self.dict_of_records.get(self.last_id, None):
+        if self.dict_of_records.get(self.__last_id, None):
             # If record with this id already exist (it shouldn't) reset the counter
-            self.last_id = max(self.dict_of_records.keys())
+            self.__last_id = max(self.dict_of_records.keys())
             log.warning(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") +
-                        f"id: {self.last_id} is already taken! last_id counter was reset")
+                        f"id: {self.__last_id} is already taken! last_id counter was reset")
 
         try:
-            self.dict_of_records[self.last_id] = DiaryRecord(id=self.last_id,
-                                                             date=date_of_record,
-                                                             title=title,
-                                                             text=text,
-                                                             date_of_creation=date_of_creation)
-            self.__id_date_relation_dict[self.last_id] = date_of_record
+            self.dict_of_records[self.__last_id] = DiaryRecord(id=self.__last_id,
+                                                               date=date_of_record,
+                                                               title=title,
+                                                               text=text,
+                                                               date_of_creation=date_of_creation)
+            self.__id_date_relation_dict[self.__last_id] = date_of_record
         except Exception as e:
             log.error(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") +
                       f"Unexpected error when creating the record in Diary. {e}")
