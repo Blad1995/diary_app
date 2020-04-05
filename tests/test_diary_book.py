@@ -1,3 +1,4 @@
+import logging as log
 import unittest as ut
 from datetime import datetime
 from os import path
@@ -9,6 +10,7 @@ from config import DiaryConfig
 
 class TestDiary(ut.TestCase):
     def __init__(self, *args, **kwargs):
+        log.basicConfig(level=log.DEBUG)
         super(TestDiary, self).__init__(*args, **kwargs)
         DiaryConfig.load("../")
 
@@ -78,3 +80,21 @@ class TestDiary(ut.TestCase):
         test_diary.create_record(date_of_record=datetime(2000, 12, 1), title="myTitle", text="whatever\nsomething")
         test_diary.export_to_txt("export")
         self.assertTrue(path.isfile(f"export/{test_diary.title.lower()}_{test_diary.date_of_creation.strftime(test_diary.cfg.date_format)}.txt"))
+
+    def test_id_date_dict(self):
+        test_diary = Diary(title="my title", bio="Můj první deníček")
+        test_diary.create_record(date_of_record=datetime(2000, 12, 1), title="myTitle", text="whatever\nsomething")
+        test_diary.create_record(date_of_record=datetime(2001, 12, 1), title="myTitle", text="whatever\nsomething")
+        test_diary.create_record(date_of_record=datetime(2002, 12, 1), title="myTitle", text="whatever\nsomething")
+
+        # Record exists
+        self.assertIsNotNone(test_diary.id_date_relation_dict.get(1))
+        self.assertEqual(test_diary.id_date_relation_dict.get(1), datetime(2001, 12, 1))
+        self.assertIsInstance(test_diary.id_date_relation_dict.get(0), datetime)
+
+        # Delete record
+        del_id = test_diary.id_date_relation_dict[datetime(2000, 12, 1)]
+        test_diary.delete_record(del_id)
+        self.assertIsNone(test_diary.dict_of_records.get(del_id))
+        self.assertIsNone(test_diary.id_date_relation_dict.get(del_id))
+        self.assertIsInstance(test_diary.dict_of_removed_records.get(del_id), DiaryRecord)

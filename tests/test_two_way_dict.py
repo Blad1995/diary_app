@@ -1,3 +1,4 @@
+import logging as log
 from datetime import datetime
 from unittest import TestCase
 
@@ -5,6 +6,10 @@ from backend_scripts.two_way_dict import TwoWayDict
 
 
 class TestTwoWayDict(TestCase):
+    def __init__(self, *args, **kwargs):
+        super(TestTwoWayDict, self).__init__(*args, **kwargs)
+        log.basicConfig(level=log.DEBUG)
+
     def test_insert(self):
         a = TwoWayDict()
         a[1] = datetime(2015, 1, 1)
