@@ -9,7 +9,7 @@ class DiaryConfig:
     dir_path: str = None
     first_use: bool = None
     log_time_format: str = None
-    owner_login_file_name: str = None
+    owner_credentials_file_name: str = None
     date_format: str = None
     natural_date_format: str = None
     data_extension: str = None
@@ -28,7 +28,7 @@ class DiaryConfig:
             cls.dir_path = cfg['dir_path']
             cls.first_use = cfg["first_use"]
             cls.log_time_format = cfg['log_time_format']
-            cls.owner_login_file_name = cfg["owner_login_file_name"]
+            cls.owner_credentials_file_name = cfg["owner_credentials_file_name"]
             cls.date_format = cfg["date_format"]
             cls.natural_date_format = cfg["natural_date_format"]
             cls.data_extension = cfg["data_extension"]

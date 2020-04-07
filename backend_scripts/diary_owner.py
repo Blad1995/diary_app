@@ -23,9 +23,9 @@ class Owner:
         :param photo: photo of the Owner
         :param data_joined: Date when the Owner was created in the app.
         """
-        self.__login = login
         self.__info = OwnerInfo(
             name=kwargs.get("name", None),
+            login=login,
             password=password,
             photo=kwargs.get("photo", None),
             email=kwargs.get("email", None),
@@ -38,7 +38,7 @@ class Owner:
 
     @property
     def login(self):
-        return self.__login
+        return self.__info.login
 
     @property
     def name(self):

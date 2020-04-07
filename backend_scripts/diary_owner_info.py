@@ -10,7 +10,7 @@ class OwnerInfo:
     """
     cfg = DiaryConfig
 
-    def __init__(self, name: str, password, photo = None, email: str = None, date_joined: datetime = None):
+    def __init__(self, name: str, password, login: str, photo = None, email: str = None, date_joined: datetime = None):
         """
         Create new instance of OwnerInfo class with following parameters.
         :param name: Name of the owner
@@ -21,6 +21,7 @@ class OwnerInfo:
         """
 
         self.__name = name
+        self.__login = login
         self.__photo = photo
         self.__email = email
         # for develompent purposes string --> TODO more secure solution
@@ -42,6 +43,14 @@ class OwnerInfo:
         log.info(datetime.now().strftime(OwnerInfo.cfg.log_time_format) +
                  f" - Name of the owner was updated from '{self.name}' to '{name}'")
         self.__name = name
+
+    @property
+    def login(self):
+        return self.__login
+
+    @login.setter
+    def login(self, value):
+        self.__login = value
 
     # Photo setters & getters
     @property
