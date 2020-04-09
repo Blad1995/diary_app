@@ -10,7 +10,7 @@ class OwnerInfo:
     """
     cfg = DiaryConfig
 
-    def __init__(self, name: str, password, login: str, photo = None, email: str = None, date_joined: datetime = None):
+    def __init__(self, login: str, password, name: str = None, photo = None, email: str = None, date_joined: datetime = None):
         """
         Create new instance of OwnerInfo class with following parameters.
         :param name: Name of the owner
@@ -32,6 +32,12 @@ class OwnerInfo:
         self.__last_active = self.__date_joined
         log.info(datetime.now().strftime(OwnerInfo.cfg.log_time_format) +
                  f" - New instance of owner info was created. {str(self)}")
+
+    def __eq__(self, other):
+        return self.__login == other.login
+
+    def __hash__(self):
+        return self.login.__hash__()
 
     # Name setters & getters
     @property
@@ -100,7 +106,7 @@ class OwnerInfo:
         return self.__date_joined
 
     def __str__(self):
-        return f"{self.name}, email: {self.email}, created: {self.date_joined}"
+        return f"Login:{self.login}, name: {self.name}, email: {self.email}, created: {self.date_joined}"
 
     def is_password_valid(self, password: str) -> bool:
         """
