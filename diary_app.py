@@ -17,16 +17,19 @@ class DiaryControl:
     """
     cfg = DiaryConfig  # :class variable for storing loaded config file.
 
-    def __init__(self):
+    def __init__(self, config_path: str = None):
         """
         Initialize empty class.
         """
         self.__owners_dict: dict or None = {}  # Contains all owners of the diaries.
-        self.cfg.load()
+        if config_path is None:
+            self.cfg.load()
+        else:
+            self.cfg.load(config_path)
 
     @property
     def owners(self):
-        return self.__owners_dict.values()
+        return list(self.__owners_dict.values())
 
     @property
     def owners_info(self):
@@ -34,7 +37,15 @@ class DiaryControl:
 
     def create_owner(self, login: str, password: str, **kwargs):
         new_owner = Owner(login=login, password=password, **kwargs)
-        self.__owners_dict[new_owner.info] = new_owner
+        # check uniqueness of login
+        if self.get_owner_by_login(login) is not None:
+            log.error(datetime.now().strftime(DiaryControl.cfg.log_time_format) +
+                      f"Owner login = {login} already exists.")
+            raise ValueError(f"Owner login = {login} already exists.")
+        else:
+            # add owner to dict and return it
+            self.__owners_dict[new_owner.info] = new_owner
+            return new_owner
 
     def delete_owner_by_login(self, del_login: str):
         del_id = None
@@ -51,17 +62,17 @@ class DiaryControl:
             del self.__owners_dict[del_owner_info]
             # self.update_owner_info_list()
             log.info(datetime.now().strftime(DiaryControl.cfg.log_time_format) +
-                     f"Owner login = {del_login} was deleted")
+                     f" - Owner login = {del_login} was deleted")
         else:
             log.error(datetime.now().strftime(DiaryControl.cfg.log_time_format) +
-                      f"Owner login = {del_login} was not found.")
+                      f" - Owner login = {del_login} was not found.")
             raise ValueError(f"Owner login = {del_login} was not found.")
 
     def save_owners_to_disc(self):
         owners_logins = [o.login for o in self.owners_info]
         # Saves every Owner separately
         for login in owners_logins:
-            owner_file_path = DiaryControl.cfg.dir_path + login + DiaryControl.cfg.data_extension
+            owner_file_path = os.path.join(DiaryControl.cfg.dir_path, login) + DiaryControl.cfg.data_extension
             try:
                 with open(owner_file_path, mode="wb") as f:
                     pickle.dump(obj=self.get_owner_by_login(login),
@@ -69,15 +80,15 @@ class DiaryControl:
                                 protocol=pickle.HIGHEST_PROTOCOL)
             except IOError as e:
                 log.error(datetime.now().strftime(DiaryControl.cfg.log_time_format) +
-                          f"Error writing to {owner_file_path} file. {e}")
+                          f" - Error writing to {owner_file_path} file. {e}")
                 raise RuntimeError(f"Can't open the file {owner_file_path} to save data.")
 
     def save_owners_info_to_disc(self):
         try:
-            owner_path = DiaryControl.cfg.dir_path + DiaryControl.cfg.owner_credentials_file_name
+            owner_path = os.path.join(DiaryControl.cfg.dir_path, DiaryControl.cfg.owner_credentials_file_name)
         except KeyError:
             log.error(datetime.now().strftime(DiaryControl.cfg.log_time_format) +
-                      "Cannot locate 'diary:owner_credentials_file_name' in config file")
+                      " - Cannot locate 'diary:owner_credentials_file_name' in config file")
             raise RuntimeError("Config file has been corrupted. 'diary:owner_credentials_file_name' missing.")
 
         self.update_owner_info_list()
@@ -86,7 +97,8 @@ class DiaryControl:
             with open(owner_path, mode="wb") as f:
                 pickle.dump(obj=list(self.__owners_dict.keys()), file=f, protocol=pickle.HIGHEST_PROTOCOL)
         except IOError as e:
-            log.error(datetime.now().strftime(DiaryControl.cfg.log_time_format) + f"Error writing to {owner_path} file. {e}")
+            log.error(datetime.now().strftime(DiaryControl.cfg.log_time_format) +
+                      f" - Error writing to {owner_path} file. {e}")
             raise RuntimeError(f"Can't open the file {owner_path} to save data.")
 
     def save_data_to_disc(self):
@@ -110,7 +122,7 @@ class DiaryControl:
                 new_owner = DiaryControl.load_owner_from_disk(o_info.login)
             except RuntimeError as e:
                 log.error(datetime.now().strftime(DiaryControl.cfg.log_time_format) +
-                          f"Error loading {o_info.login} owner from disc. Data structure corrupted.{e}")
+                          f" - Error loading {o_info.login} owner from disc. Data structure corrupted.{e}")
                 raise RuntimeError(f"Unable to load {o_info.login} owner.")
             # replace old entry by new loaded entry
             del self.__owners_dict[o_info]
@@ -132,7 +144,7 @@ class DiaryControl:
             owner_path = DiaryControl.cfg.dir_path + DiaryControl.cfg.owner_credentials_file_name
         except KeyError:
             log.error(datetime.now().strftime(DiaryControl.cfg.log_time_format) +
-                      "Cannot locate 'diary:owner_credentials_file_name' in config file")
+                      " - Cannot locate 'diary:owner_credentials_file_name' in config file")
             raise RuntimeError("Config file has been corrupted. 'diary:owner_credentials_file_name' missing.")
 
         # try to read the owner info from file
@@ -145,7 +157,7 @@ class DiaryControl:
             raise RuntimeError(f"File {owner_path} not found. Can't load the data.")
         except IOError as e:
             log.error(datetime.now().strftime(DiaryControl.cfg.log_time_format) +
-                      f"Error reading {owner_path} file. {e}")
+                      f" - Error reading {owner_path} file. {e}")
             raise RuntimeError(f"Can't load the data from {owner_path}.")
 
         return owners_info
@@ -157,7 +169,8 @@ class DiaryControl:
             with open(owner_file_path, mode="rb") as f:
                 new_owner = pickle.load(file=f)
         except IOError as e:
-            log.error(datetime.now().strftime(cls.cfg.log_time_format) + f"Error reading from {owner_file_path} file. {e}")
+            log.error(datetime.now().strftime(cls.cfg.log_time_format) +
+                      f" - Error reading from {owner_file_path} file. {e}")
             raise RuntimeError(f"Can't open the file {owner_file_path} to load data.")
         return new_owner
 
@@ -171,7 +184,8 @@ class DiaryControl:
         try:
             os.remove(owner_file_path)
         except FileNotFoundError as e:
-            log.error(datetime.now().strftime(self.cfg.log_time_format) + f"Error deleting {owner_file_path} file. {e}")
+            log.error(datetime.now().strftime(self.cfg.log_time_format) +
+                      f" - Error deleting {owner_file_path} file. {e}")
 
 
 if __name__ == "__main__":

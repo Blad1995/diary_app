@@ -50,6 +50,7 @@ class Owner:
 
     @info.setter
     def info(self, **kwargs):
+        # TODO can't set probably
         for key, value in kwargs.items():
             try:
                 setattr(self.__info, key, value)

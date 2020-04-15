@@ -1,4 +1,5 @@
 import logging as log
+import os as os
 from datetime import datetime
 
 import yaml as yaml
@@ -17,7 +18,7 @@ class DiaryConfig:
 
     @classmethod
     def load(cls, config_path = "./"):
-        with open(config_path + cls.__config_path, mode="r") as f:
+        with open(os.path.join(config_path, cls.__config_path), mode="r") as f:
             cfg = yaml.safe_load(f)
         if not cfg:
             raise RuntimeError("Cannot find config file.")

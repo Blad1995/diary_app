@@ -56,6 +56,8 @@ class OwnerInfo:
 
     @login.setter
     def login(self, value):
+        log.info(datetime.now().strftime(OwnerInfo.cfg.log_time_format) +
+                 f" - Login of the owner was updated from '{self.login}' to '{value}'")
         self.__login = value
 
     # Photo setters & getters
