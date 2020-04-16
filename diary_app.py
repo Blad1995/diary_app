@@ -95,7 +95,7 @@ class DiaryControl:
 
         if del_owner_info is not None:
             # delete data from disc
-            self.erase_data_files(del_owner_info.login)
+            self.erase_owner_data_files(del_owner_info.login)
             # delete key_value pair from dict (even if owner not loaded)
             del self.__owners_dict[del_owner_info]
             # self.update_owner_info_list()
@@ -210,7 +210,7 @@ class DiaryControl:
         """
         try:
             # tries to find Owner logins file path in config file
-            owner_path = DiaryControl.cfg.dir_path + DiaryControl.cfg.owner_credentials_file_name
+            owner_path = os.path.join(DiaryControl.cfg.dir_path, DiaryControl.cfg.owner_credentials_file_name)
         except KeyError:
             log.error(datetime.now().strftime(DiaryControl.cfg.log_time_format) +
                       " - Cannot locate 'diary:owner_credentials_file_name' in config file")
@@ -261,7 +261,7 @@ class DiaryControl:
         # TODO maybe wont be needed
         raise NotImplementedError("update_owner_info_list NOT IMPLEMENTED")
 
-    def erase_data_files(self, login: str):
+    def erase_owner_data_files(self, login: str):
         """
         Erase all data from disc from the Owner given be the login.\n
         Gives no warning if the files are not found. Only log the error.\n
