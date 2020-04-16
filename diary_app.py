@@ -11,6 +11,15 @@ from backend_scripts.diary_owner_info import OwnerInfo
 from config import DiaryConfig
 
 
+def check_dir_path_existence(dir_path: str):
+    """
+    Check path where to store data from config file\n
+    Make directory if needed
+    """
+    if not os.path.isdir(dir_path):
+        os.mkdir(dir_path)
+
+
 class DiaryControl:
     """
     Controls whole app Diary. Contains methods for storing and loading data from files and stores all owners and other data.
@@ -103,6 +112,7 @@ class DiaryControl:
         Uses config values to store define file location of the result data files.\n
         :raise RuntimeError: if the file path is not valid and can't save the data
         """
+        check_dir_path_existence(DiaryControl.cfg.dir_path)
         owners_logins = [o.login for o in self.owners_info]
         # Saves every Owner separately
         for login in owners_logins:
@@ -131,7 +141,8 @@ class DiaryControl:
                       " - Cannot locate 'diary:owner_credentials_file_name' in config file")
             raise RuntimeError("Config file has been corrupted. 'diary:owner_credentials_file_name' missing.")
 
-        self.update_owner_info_list()
+        check_dir_path_existence(DiaryControl.cfg.dir_path)
+        # self.update_owner_info_list()
         try:
             # Saves owners login to file
             with open(owner_path, mode="wb") as f:
@@ -149,11 +160,6 @@ class DiaryControl:
         # Save owners info and owners data
         self.save_owners_to_disc()
         self.save_owners_info_to_disc()
-
-        # check path where to store data from config file
-        # make directory if needed
-        if not os.path.isdir(DiaryControl.cfg.dir_path):
-            os.mkdir(DiaryControl.cfg.dir_path)
         # set config value first use to false and saves the config
         self.set_config_first_use_false()
 
