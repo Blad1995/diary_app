@@ -10,14 +10,14 @@ from config import DiaryConfig
 
 class Diary:
     """
-    Class representing whole Diary book.
+    Class representing whole Diary book.\n
     :var cfg: class variable for storing loaded config file.
     """
     cfg = DiaryConfig
 
     def __init__(self, title: str, date_of_creation: datetime = None, dict_of_records: dict = None, bio: str = None):
         """
-        Initialize Diary class.
+        Initialize Diary class.\n
         :param title: Title of the whole Diary book.
         :param date_of_creation: Date when the Diary was created.
         :param dict_of_records: dictionary containing all existing DiaryRecords.
@@ -77,7 +77,7 @@ class Diary:
 
     def export_to_txt(self, destination: str):
         """
-        Export whole Diary with records to txt
+        Export whole Diary with records to txt\n
         :param destination: Folder path where the result should be written.
         """
         if not os.path.isdir(destination):
@@ -104,8 +104,8 @@ class Diary:
 
     def create_record(self, date_of_record: datetime, title: str, text: str, date_of_creation: datetime = None):
         """
-        Creates new record and adds it to the dict_of_records. Raise exception if only something unexpected happens.
-        Accepts parameters of the strict type.
+        Creates new record and adds it to the dict_of_records. Raise exception if only something unexpected happens.\n
+        Accepts parameters of the strict type.\n
         :type date_of_creation: datetime
         :type text: str
         :type title: str
@@ -145,11 +145,12 @@ class Diary:
 
     def update_record(self, record_id: int, date_of_record: datetime = None, text: str = None, title: str = None):
         """
-        Updates information about the record identified by given record_id. Raises ValueError if no such record found.
+        Updates information about the record identified by given record_id.\n
         :param record_id: id of the record to be updated
         :param date_of_record: new date of the record
         :param text: new text of the record
         :param title: new title of the record
+        :raise ValueError if no such record found.
         """
         record_to_update: DiaryRecord = self.dict_of_records.get(record_id, None)
         if record_to_update:
@@ -159,16 +160,16 @@ class Diary:
                         f"No such diary record with id = {record_id}")
             raise ValueError(f"Diary record number {record_id} doesn't exist")
 
-    def get_record_by_id(self, record_id: int):
-        return self.dict_of_records.get(record_id)
+    def get_record_by_id(self, record_id: int, default = None):
+        return self.dict_of_records.get(record_id, default)
 
-    def get_record_by_date(self, record_date: datetime):
+    def get_record_by_date(self, record_date: datetime, default = None):
         id_of_date = self.__id_date_relation_dict.get(record_date)
         # returns None even if id_of_date is None
-        return self.dict_of_records.get(id_of_date)
+        return self.dict_of_records.get(id_of_date, default)
 
-    def get_date_for_given_id(self, given_id: int):
-        return self.__id_date_relation_dict.get(given_id)
+    def get_date_for_given_id(self, given_id: int, default = None):
+        return self.__id_date_relation_dict.get(given_id, default)
 
-    def get_id_for_given_date(self, given_date: datetime):
-        return self.__id_date_relation_dict.get(given_date)
+    def get_id_for_given_date(self, given_date: datetime, default = None):
+        return self.__id_date_relation_dict.get(given_date, default)

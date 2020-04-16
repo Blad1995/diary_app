@@ -12,7 +12,7 @@ class OwnerInfo:
 
     def __init__(self, login: str, password, name: str = None, photo = None, email: str = None, date_joined: datetime = None):
         """
-        Create new instance of OwnerInfo class with following parameters.
+        Create new instance of OwnerInfo class with following parameters.\n
         :param name: Name of the owner
         :param password: New password in the form of the string
         :param photo: Photo of the owner
@@ -112,7 +112,7 @@ class OwnerInfo:
 
     def is_password_valid(self, password: str) -> bool:
         """
-        Determines if password is valid.
+        Determines if password is valid.\n
         :param password: string of the password to be tested
         :return: Bool value
         """
