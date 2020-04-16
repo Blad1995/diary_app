@@ -84,9 +84,9 @@ class DiaryControl:
                 # finds the right owner in list and store the location
                 del_owner_info = owner_info
 
-        if del_id is not None:
+        if del_owner_info is not None:
             # delete data from disc
-            self.erase_data_files(del_id)
+            self.erase_data_files(del_owner_info.login)
             # delete key_value pair from dict (even if owner not loaded)
             del self.__owners_dict[del_owner_info]
             # self.update_owner_info_list()
@@ -255,8 +255,7 @@ class DiaryControl:
         # TODO maybe wont be needed
         raise NotImplementedError("update_owner_info_list NOT IMPLEMENTED")
 
-    def erase_data_files(self, del_id):
-        login = self.owners_info[del_id].login
+    def erase_data_files(self, login: str):
         owner_file_path = self.cfg.dir_path + login + self.cfg.data_extension
         try:
             os.remove(owner_file_path)
