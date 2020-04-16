@@ -256,6 +256,11 @@ class DiaryControl:
         raise NotImplementedError("update_owner_info_list NOT IMPLEMENTED")
 
     def erase_data_files(self, login: str):
+        """
+        Erase all data from disc from the Owner given be the login.\n
+        Gives no warning if the files are not found. Only log the error.\n
+        :param login: Login of the Owner whose data to be erased.
+        """
         owner_file_path = self.cfg.dir_path + login + self.cfg.data_extension
         try:
             os.remove(owner_file_path)
