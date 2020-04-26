@@ -19,6 +19,9 @@ class OwnerInfo:
         :param email: Email address of the owner
         :param date_joined: Date on which the owner was added to application (created in app)
         """
+        assert type(name) in [str, type(None)]
+        assert type(login) == str
+        assert type(email) in [str, type(None)]
 
         self.__name = name
         self.__login = login

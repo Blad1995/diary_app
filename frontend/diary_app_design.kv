@@ -1,10 +1,11 @@
 WindowManager:
     EntryWindow:
     LoginWindow:
+    CreateUserWindow:
 
 <BasicButton@Button>:
     background_color: [.4,1,.1,1]
-    font_size: 12
+    font_size: 14
     size_hint_y: None
     height: 60
 
@@ -13,7 +14,13 @@ WindowManager:
     multiline: False
     write_tab: False
 
+<MultiLineInput@TextInput>
+    text:""
+    multiline: True
+    write_tab: False
+
 <BasicLabel@Label>
+    font_size: 14
 
 <EntryWindow>:
     name: "W_Entry"
@@ -26,17 +33,21 @@ WindowManager:
             BasicButton:
                 id: bt_new_user
                 text: "Create new user"
+                on_release:
+                    app.root.current = "W_CreateUser"
 
             BasicButton:
                 text: "Log in to existing account"
                 on_release:
-                    app.root.current = "W_Login"
                     root.manager.transition.direction = "left"
+                    app.root.current = "W_Login"
+
 
 <LoginWindow>:
     name: "W_Login"
+    id: W_Login
     RelativeLayout:
-        size_hint: 0.4, 0.4
+        size_hint: 0.8, 0.3
         pos_hint: {'center_x': 0.5, 'center_y': 0.5}
         GridLayout:
             cols:1
@@ -53,7 +64,6 @@ WindowManager:
                     id: ti_login
                     multiline: False
                     text:""
-
                 BasicLabel:
                     text: "Password:"
                 BasicInput:
@@ -78,3 +88,53 @@ WindowManager:
                     text: "OK"
                     on_press:
                         root.check_login_validity(ti_login, ti_password)
+
+<CreateUserWindow>
+    name: "W_CreateUser"
+    id: W_CreateUser
+    GridLayout:
+        pos_hint: {"center_x": 0.5, "center_y":0.9}
+        cols: 2
+        size_hint_x: 0.9
+        size_hint_y: 0.1
+        row_default_height:33
+        BasicLabel:
+            text:"Login:"
+        BasicInput:
+            id: ti_new_login
+            on_text_validate:
+                root.check_duplicate_login(ti_new_login.text)
+        BasicLabel:
+            text:"Password:"
+        BasicInput:
+            id: ti_new_password
+            password: True
+        BasicLabel:
+            text:"Re-enter password:"
+        BasicInput:
+            id: ti_new_password_confirm
+            password: True
+        BasicLabel:
+            text:"Name:"
+        BasicInput:
+            id: ti_new_owner_name
+        BasicLabel:
+            text:"Email:"
+        BasicInput:
+            id: ti_new_owner_email
+        BasicLabel:
+            text:"Info about user:"
+        MultiLineInput:
+            size_hint_y: None
+            height:
+            id: ti_new_owner_bio
+
+
+        BasicButton:
+            text: "Cancel"
+            on_release:
+                app.root.current="W_Entry"
+        BasicButton:
+            text: "Confirm"
+            on_release:
+                if root.perform_check():root.create_user()

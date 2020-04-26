@@ -23,6 +23,9 @@ class Owner:
         :keyword photo: photo of the Owner
         :keyword data_joined: Date when the Owner was created in the app.
         """
+        assert type(login) == str
+        assert type(password) == str
+
         self.__info = OwnerInfo(
             name=kwargs.get("name", None),
             login=login,
