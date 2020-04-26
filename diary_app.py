@@ -201,6 +201,29 @@ class DiaryControl:
         """
         return self.__owners_dict.get(OwnerInfo(login=login, password=None), default)
 
+    def login_exists(self, login: str) -> bool:
+        """
+        Check if there is OwnerInfo with given login \n
+        :param login: login of the Owner to be checked
+        :return: bool value if the login was found
+        """
+        for o_info in self.owners_info:
+            if o_info.login == login:
+                return True
+        return False
+
+    def get_owner_info_by_login(self, login: str, default = None) -> OwnerInfo or None:
+        """
+        Get OwnerInfo from list of DiaryControl.owners_info by given login.\
+        :param login: login of the owner
+        :param default: default value that should be returned if no owner info found.
+        :return: reference to the OwnersInfo found
+        """
+        for o_info in self.owners_info:
+            if o_info.login == login:
+                return o_info
+        return default
+
     @classmethod
     def load_owners_info_from_disc(cls):
         """

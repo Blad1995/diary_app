@@ -1,0 +1,80 @@
+WindowManager:
+    EntryWindow:
+    LoginWindow:
+
+<BasicButton@Button>:
+    background_color: [.4,1,.1,1]
+    font_size: 12
+    size_hint_y: None
+    height: 60
+
+<BasicInput@TextInput>
+    text:""
+    multiline: False
+    write_tab: False
+
+<BasicLabel@Label>
+
+<EntryWindow>:
+    name: "W_Entry"
+    RelativeLayout:
+        size_hint: 0.4, 0.2
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        GridLayout:
+            rows: 2
+            pos_hint: self.pos_hint
+            BasicButton:
+                id: bt_new_user
+                text: "Create new user"
+
+            BasicButton:
+                text: "Log in to existing account"
+                on_release:
+                    app.root.current = "W_Login"
+                    root.manager.transition.direction = "left"
+
+<LoginWindow>:
+    name: "W_Login"
+    RelativeLayout:
+        size_hint: 0.4, 0.4
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        GridLayout:
+            cols:1
+            size: self.size
+            GridLayout:
+                cols:2
+                padding: [0, 0, 0, 50]
+                row_default_height: 30
+                size_hint_y: None
+                size_hint_max_y: 40
+                BasicLabel:
+                    text: "Login:"
+                BasicInput:
+                    id: ti_login
+                    multiline: False
+                    text:""
+
+                BasicLabel:
+                    text: "Password:"
+                BasicInput:
+                    id: ti_password
+                    multiline: False
+                    text:""
+                    password: True
+                    on_text_validate:
+                        root.check_login_validity(ti_login, ti_password)
+            GridLayout:
+                cols:2
+                size_hint_x: 1
+                size_hint_y: 1
+                BasicButton:
+                    size_hint: 1, None
+                    text: "Cancel"
+                    on_release:
+                        app.root.current="W_Entry"
+                        root.manager.transition.direction= "right"
+                BasicButton:
+                    size_hint: 1, None
+                    text: "OK"
+                    on_press:
+                        root.check_login_validity(ti_login, ti_password)
