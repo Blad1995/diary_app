@@ -48,8 +48,8 @@ class TestDiaryControl(TestCase):
         self.assertTrue(test_diary_control.owners[0].is_password_valid(PASSWORD1))
         self.assertIsNone(test_diary_control.owners[0].name)
 
-        test_diary_control.create_owner(login=LOGIN1,
-                                        password=PASSWORD1,
+        test_diary_control.create_owner(login=LOGIN2,
+                                        password=PASSWORD2,
                                         name="Ondra",
                                         bio="987654659874")
         test_owners = test_diary_control.owners
