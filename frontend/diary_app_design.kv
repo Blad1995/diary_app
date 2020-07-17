@@ -1,13 +1,14 @@
 WindowManager:
+#for dev purpose
+    DatePickWindow
     EntryWindow:
     LoginWindow:
     CreateUserWindow:
+    #DatePickWindow:
 
 <BasicButton@Button>:
     background_color: [.4,1,.1,1]
-    font_size: 14
-    size_hint_y: None
-    height: 60
+    font_size: 0.75*self.height
 
 <BasicInput@TextInput>
     text:""
@@ -21,6 +22,15 @@ WindowManager:
 
 <BasicLabel@Label>
     font_size: 14
+
+<Toolbar@BoxLayout>
+    size_hint: (0.96,0.06)
+    pos_hint:{'x':0.02,'y':0.92}
+
+<ToolboxButton@Button>:
+    background_normal: ''
+    background_color: [0.0, 0.45,1.0,1]
+    color:(255,255,255,1)
 
 <EntryWindow>:
     name: "W_Entry"
@@ -61,18 +71,18 @@ WindowManager:
                 BasicLabel:
                     text: "Login:"
                 BasicInput:
-                    id: ti_login
+                    id: ti_wlogin_login
                     multiline: False
                     text:""
                 BasicLabel:
                     text: "Password:"
                 BasicInput:
-                    id: ti_password
+                    id: ti_wlogin_password
                     multiline: False
                     text:""
                     password: True
                     on_text_validate:
-                        root.check_login_validity(ti_login, ti_password)
+                        root.check_login_validity(ti_wlogin_login.text, ti_wlogin_password.text)
             GridLayout:
                 cols:2
                 size_hint_x: 1
@@ -87,7 +97,7 @@ WindowManager:
                     size_hint: 1, None
                     text: "OK"
                     on_press:
-                        root.check_login_validity(ti_login, ti_password)
+                        root.check_login_validity(ti_wlogin_login.text, ti_wlogin_password.text)
 
 <CreateUserWindow>
     name: "W_CreateUser"
@@ -99,35 +109,35 @@ WindowManager:
         size_hint_y: 0.1
         row_default_height:33
         BasicLabel:
-            text:"Login:"
+            text:"*Login:"
         BasicInput:
-            id: ti_new_login
+            id: ti_wcreateuser_login
             on_text_validate:
                 root.check_duplicate_login(ti_new_login.text)
         BasicLabel:
-            text:"Password:"
+            text:"*Password:"
         BasicInput:
-            id: ti_new_password
+            id: ti_wcreateuser_password
             password: True
         BasicLabel:
             text:"Re-enter password:"
         BasicInput:
-            id: ti_new_password_confirm
+            id: ti_wcreateuser_password_confirm
             password: True
         BasicLabel:
             text:"Name:"
         BasicInput:
-            id: ti_new_owner_name
+            id: ti_wcreateuser_name
         BasicLabel:
             text:"Email:"
         BasicInput:
-            id: ti_new_owner_email
+            id: ti_wcreateuser_email
         BasicLabel:
             text:"Info about user:"
         MultiLineInput:
             size_hint_y: None
             height:
-            id: ti_new_owner_bio
+            id: ti_wcreateuser_bio
 
 
         BasicButton:
@@ -138,3 +148,55 @@ WindowManager:
             text: "Confirm"
             on_release:
                 if root.perform_check():root.create_user()
+
+<DatePickWindow>
+    name: "W_DatePick"
+    id: W_DatePick
+    FloatLayout:
+        Toolbar:
+            GridLayout:
+                cols:2
+                size_hint_y:1
+#                canvas.before:
+#                    Color:
+#                        rgba: 0.5, 0.5, 0.5, 1
+#                    Rectangle:
+#                        pos: self.pos
+#                        size: self.size
+                StackLayout:
+                    orientation:"lr-tb"
+                    spacing:[10,0]
+                    ToolboxButton:
+                        text:"Back"
+                        size_hint_x:0.15
+
+                StackLayout:
+                    spacing:[10,0]
+                    orientation:"rl-tb"
+                    ToolboxButton:
+                        text:"Logout"
+                        size_hint_x:0.15
+                    ToolboxButton:
+                        text:"Save all"
+                        size_hint_x:0.15
+        FloatLayout:
+            size_hint: (0.96,0.86)
+            pos_hint:{"x":0.02,"y":0.04}
+#            canvas.before:
+#                Color:
+#                    rgba: 255,0,0, 1
+#                Rectangle:
+#                    pos: self.pos
+#                    size: self.size
+            BasicLabel:
+                text:"Please choose the date:"
+                size_hint:(0.3,0.05)
+                font_size:20
+                pos_hint:{"center_x":0.5,"center_y":0.60}
+            DatePicker:
+                pHint: 0.5,0.5
+                pos_hint:{"center_x":0.5,"center_y":0.5}
+                size_hint_x: .2
+                size_hint_y:0.05
+                id: "ti_wdatepick_date"
+

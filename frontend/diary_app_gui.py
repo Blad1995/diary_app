@@ -30,19 +30,32 @@ class EntryWindow(Screen):
     pass
 
 
+class DatePickWindow(Screen):
+    pass
+
+
 class LoginWindow(Screen):
+    def on_pre_leave(self, *args):
+        self.ids.get("ti_wlogin_login").text = ""
+        self.ids.get("ti_wlogin_password").text = ""
+
     def check_login_validity(self, input_login: str, input_password: str):
         app = App.get_running_app()
         if login_exists(input_login):
             o_info = app.diary_ctr.get_owner_info_by_login(input_login)
             if o_info.is_password_valid(input_password):
                 # If valid, proceed to next level
-                self.change_screen(new_screen="W_MainWindow")
+                change_screen(self, new_screen="W_DatePickWindow")
             else:
-                wrong_password_popup = Popup(content=Label(text="Password is not valid"))
+                wrong_password_popup = Popup(content=Label(text="Password is not valid"),
+                                             title="Login error",
+                                             size_hint=(None, None),
+                                             size=(200, 100)
+                                             )
                 wrong_password_popup.open()
                 # When popup disappear change the screen
-                wrong_password_popup.bind(on_dismiss=lambda *args: change_screen(self))
+                wrong_password_popup.bind(on_dismiss=lambda *args: change_screen(screen_instance=self,
+                                                                                 new_screen="W_Login"))
         else:
             wrong_login_popup = Popup(content=Label(text="Login doesn't exist"),
                                       title="Login error",
@@ -50,18 +63,19 @@ class LoginWindow(Screen):
                                       size=(200, 100))
             wrong_login_popup.open()
             # When popup disappear change the screen
-            wrong_login_popup.bind(on_dismiss=lambda *args: change_screen(self))
+            wrong_login_popup.bind(on_dismiss=lambda *args: change_screen(screen_instance=self,
+                                                                          new_screen="W_Entry"))
 
 
 class CreateUserWindow(Screen):
     def on_leave(self, *args):
         # Erase text in all TextInput fields
-        self.ids.get("ti_new_login").text = ""
-        self.ids.get("ti_new_password").text = ""
-        self.ids.get("ti_new_password_confirm").text = ""
-        self.ids.get("ti_new_owner_name").text = ""
-        self.ids.get("ti_new_owner_email").text = ""
-        self.ids.get("ti_new_owner_bio").text = ""
+        self.ids.get("ti_wcreateuser_login").text = ""
+        self.ids.get("ti_wcreateuser_password").text = ""
+        self.ids.get("ti_wcreateuser_password_confirm").text = ""
+        self.ids.get("ti_wcreateuser_name").text = ""
+        self.ids.get("ti_wcreateuser_email").text = ""
+        self.ids.get("ti_wcreateuser_bio").text = ""
 
     def check_duplicate_login(self, login):
         if login_exists(login=login):
@@ -90,20 +104,22 @@ class CreateUserWindow(Screen):
             return True
 
     def perform_check(self):
-        result = self.check_duplicate_login(self.ids.get("ti_new_login").text) and \
-                 self.check_password_confirm(self.ids.get("ti_new_password").text,
-                                             self.ids.get("ti_new_password_confirm").text)
+        # TODO short password or empty login
+        result = self.check_duplicate_login(self.ids.get("ti_wcreateuser_login").text) and \
+                 self.check_password_confirm(self.ids.get("ti_wcreateuser_password").text,
+                                             self.ids.get("ti_wcreateuser_password_confirm").text)
         return result
 
     def create_user(self):
         diary: DiaryControl = App.get_running_app().diary_ctr
         diary.create_owner(
-            login=self.ids.get("ti_new_login").text,
-            password=self.ids.get("ti_new_password").text,
-            name=self.ids.get("ti_new_owner_name").text,
-            email=self.ids.get("ti_new_owner_email").text,
-            bio=self.ids.get("ti_new_owner_bio").text
+            login=self.ids.get("ti_wcreateuser_login").text,
+            password=self.ids.get("ti_wcreateuser_password").text,
+            name=self.ids.get("ti_wcreateuser_name").text,
+            email=self.ids.get("ti_wcreateuser_email").text,
+            bio=self.ids.get("ti_wcreateuser_bio").text
             )
+        change_screen(screen_instance=self, new_screen="W_Entry")
 
 
 app_builder = Builder.load_file("diary_app_design.kv")
