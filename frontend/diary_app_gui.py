@@ -30,6 +30,13 @@ class EntryWindow(Screen):
     pass
 
 
+class DiaryPickWindow(Screen):
+    def on_pre_enter(self, *args):
+        app = App.get_running_app()
+        # diaries
+        # for i in
+
+
 class DatePickWindow(Screen):
     pass
 
@@ -45,7 +52,8 @@ class LoginWindow(Screen):
             o_info = app.diary_ctr.get_owner_info_by_login(input_login)
             if o_info.is_password_valid(input_password):
                 # If valid, proceed to next level
-                change_screen(self, new_screen="W_DatePickWindow")
+                app.current_owner = app.diary_ctr.get_owner_by_login(login=o_info.login)
+                change_screen(self, new_screen="W_DiaryPick")
             else:
                 wrong_password_popup = Popup(content=Label(text="Password is not valid"),
                                              title="Login error",
@@ -126,7 +134,11 @@ app_builder = Builder.load_file("diary_app_design.kv")
 
 
 class DiaryAppGUI(App):
-    diary_ctr = DiaryControl("../")
+    diary_ctr: DiaryControl = DiaryControl("../")
+
+    def __init__(self, *args, **kwargs):
+        super(DiaryAppGUI, self).__init__(*args, **kwargs)
+        self.current_owner = None
 
     def build(self):
         return app_builder
