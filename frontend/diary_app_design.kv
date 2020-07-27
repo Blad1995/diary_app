@@ -1,14 +1,15 @@
 WindowManager:
 #for dev purpose
-    DatePickWindow
+    DiaryPickWindow:
     EntryWindow:
     LoginWindow:
     CreateUserWindow:
-    #DatePickWindow:
+    DatePickWindow:
+#    DiaryPickWindow:
 
 <BasicButton@Button>:
     background_color: [.4,1,.1,1]
-    font_size: 0.75*self.height
+    font_size: 0.3*self.height
 
 <BasicInput@TextInput>
     text:""
@@ -120,7 +121,7 @@ WindowManager:
             id: ti_wcreateuser_password
             password: True
         BasicLabel:
-            text:"Re-enter password:"
+            text:"*Re-enter password:"
         BasicInput:
             id: ti_wcreateuser_password_confirm
             password: True
@@ -149,6 +150,33 @@ WindowManager:
             on_release:
                 if root.perform_check():root.create_user()
 
+<DiaryPickWindow>
+    name: "W_DiaryPick"
+    id: W_DiaryPick
+    FloatLayout:
+        Toolbar:
+            GridLayout:
+                cols:2
+                size_hint_y:1
+                StackLayout:
+                    orientation:"lr-tb"
+                    spacing:[10,0]
+                    ToolboxButton:
+                        text:"Back"
+                        size_hint_x:0.15
+                        on_release:
+                            app.root.current="W_Login"
+
+                StackLayout:
+                    spacing:[10,0]
+                    orientation:"rl-tb"
+                    ToolboxButton:
+                        text:"Logout"
+                        size_hint_x:0.15
+    GridLayout:
+        cols: 2
+        
+
 <DatePickWindow>
     name: "W_DatePick"
     id: W_DatePick
@@ -157,18 +185,14 @@ WindowManager:
             GridLayout:
                 cols:2
                 size_hint_y:1
-#                canvas.before:
-#                    Color:
-#                        rgba: 0.5, 0.5, 0.5, 1
-#                    Rectangle:
-#                        pos: self.pos
-#                        size: self.size
                 StackLayout:
                     orientation:"lr-tb"
                     spacing:[10,0]
                     ToolboxButton:
                         text:"Back"
                         size_hint_x:0.15
+                        on_release:
+                            app.root.current="W_DiaryPick"
 
                 StackLayout:
                     spacing:[10,0]
