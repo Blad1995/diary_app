@@ -1,0 +1,226 @@
+WindowManager:
+#for dev purpose
+    DiaryPickWindow:
+    EntryWindow:
+    LoginWindow:
+    CreateUserWindow:
+    DatePickWindow:
+#    DiaryPickWindow:
+
+<BasicButton@Button>:
+    background_color: [.4,1,.1,1]
+    font_size: 0.3*self.height
+
+<BasicInput@TextInput>
+    text:""
+    multiline: False
+    write_tab: False
+
+<MultiLineInput@TextInput>
+    text:""
+    multiline: True
+    write_tab: False
+
+<BasicLabel@Label>
+    font_size: 14
+
+<Toolbar@BoxLayout>
+    size_hint: (0.96,0.06)
+    pos_hint:{'x':0.02,'y':0.92}
+
+<ToolboxButton@Button>:
+    background_normal: ''
+    background_color: [0.0, 0.45,1.0,1]
+    color:(255,255,255,1)
+
+<EntryWindow>:
+    name: "W_Entry"
+    RelativeLayout:
+        size_hint: 0.4, 0.2
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        GridLayout:
+            rows: 2
+            pos_hint: self.pos_hint
+            BasicButton:
+                id: bt_new_user
+                text: "Create new user"
+                on_release:
+                    app.root.current = "W_CreateUser"
+
+            BasicButton:
+                text: "Log in to existing account"
+                on_release:
+                    root.manager.transition.direction = "left"
+                    app.root.current = "W_Login"
+
+
+<LoginWindow>:
+    name: "W_Login"
+    id: W_Login
+    RelativeLayout:
+        size_hint: 0.8, 0.3
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        GridLayout:
+            cols:1
+            size: self.size
+            GridLayout:
+                cols:2
+                padding: [0, 0, 0, 50]
+                row_default_height: 30
+                size_hint_y: None
+                size_hint_max_y: 40
+                BasicLabel:
+                    text: "Login:"
+                BasicInput:
+                    id: ti_wlogin_login
+                    multiline: False
+                    text:""
+                BasicLabel:
+                    text: "Password:"
+                BasicInput:
+                    id: ti_wlogin_password
+                    multiline: False
+                    text:""
+                    password: True
+                    on_text_validate:
+                        root.check_login_validity(ti_wlogin_login.text, ti_wlogin_password.text)
+            GridLayout:
+                cols:2
+                size_hint_x: 1
+                size_hint_y: 1
+                BasicButton:
+                    size_hint: 1, None
+                    text: "Cancel"
+                    on_release:
+                        app.root.current="W_Entry"
+                        root.manager.transition.direction= "right"
+                BasicButton:
+                    size_hint: 1, None
+                    text: "OK"
+                    on_press:
+                        root.check_login_validity(ti_wlogin_login.text, ti_wlogin_password.text)
+
+<CreateUserWindow>
+    name: "W_CreateUser"
+    id: W_CreateUser
+    GridLayout:
+        pos_hint: {"center_x": 0.5, "center_y":0.9}
+        cols: 2
+        size_hint_x: 0.9
+        size_hint_y: 0.1
+        row_default_height:33
+        BasicLabel:
+            text:"*Login:"
+        BasicInput:
+            id: ti_wcreateuser_login
+            on_text_validate:
+                root.check_duplicate_login(ti_new_login.text)
+        BasicLabel:
+            text:"*Password:"
+        BasicInput:
+            id: ti_wcreateuser_password
+            password: True
+        BasicLabel:
+            text:"*Re-enter password:"
+        BasicInput:
+            id: ti_wcreateuser_password_confirm
+            password: True
+        BasicLabel:
+            text:"Name:"
+        BasicInput:
+            id: ti_wcreateuser_name
+        BasicLabel:
+            text:"Email:"
+        BasicInput:
+            id: ti_wcreateuser_email
+        BasicLabel:
+            text:"Info about user:"
+        MultiLineInput:
+            size_hint_y: None
+            height:
+            id: ti_wcreateuser_bio
+
+
+        BasicButton:
+            text: "Cancel"
+            on_release:
+                app.root.current="W_Entry"
+        BasicButton:
+            text: "Confirm"
+            on_release:
+                if root.perform_check():root.create_user()
+
+<DiaryPickWindow>
+    name: "W_DiaryPick"
+    id: W_DiaryPick
+    FloatLayout:
+        Toolbar:
+            GridLayout:
+                cols:2
+                size_hint_y:1
+                StackLayout:
+                    orientation:"lr-tb"
+                    spacing:[10,0]
+                    ToolboxButton:
+                        text:"Back"
+                        size_hint_x:0.15
+                        on_release:
+                            app.root.current="W_Login"
+
+                StackLayout:
+                    spacing:[10,0]
+                    orientation:"rl-tb"
+                    ToolboxButton:
+                        text:"Logout"
+                        size_hint_x:0.15
+    GridLayout:
+        cols: 2
+        
+
+<DatePickWindow>
+    name: "W_DatePick"
+    id: W_DatePick
+    FloatLayout:
+        Toolbar:
+            GridLayout:
+                cols:2
+                size_hint_y:1
+                StackLayout:
+                    orientation:"lr-tb"
+                    spacing:[10,0]
+                    ToolboxButton:
+                        text:"Back"
+                        size_hint_x:0.15
+                        on_release:
+                            app.root.current="W_DiaryPick"
+
+                StackLayout:
+                    spacing:[10,0]
+                    orientation:"rl-tb"
+                    ToolboxButton:
+                        text:"Logout"
+                        size_hint_x:0.15
+                    ToolboxButton:
+                        text:"Save all"
+                        size_hint_x:0.15
+        FloatLayout:
+            size_hint: (0.96,0.86)
+            pos_hint:{"x":0.02,"y":0.04}
+#            canvas.before:
+#                Color:
+#                    rgba: 255,0,0, 1
+#                Rectangle:
+#                    pos: self.pos
+#                    size: self.size
+            BasicLabel:
+                text:"Please choose the date:"
+                size_hint:(0.3,0.05)
+                font_size:20
+                pos_hint:{"center_x":0.5,"center_y":0.60}
+            DatePicker:
+                pHint: 0.5,0.5
+                pos_hint:{"center_x":0.5,"center_y":0.5}
+                size_hint_x: .2
+                size_hint_y:0.05
+                id: "ti_wdatepick_date"
+

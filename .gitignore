@@ -4,3 +4,4 @@ __pycache__/*
 *.Ddata
 config.yml
 /tests/export/*
+build/*

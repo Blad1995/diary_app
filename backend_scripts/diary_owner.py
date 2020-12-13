@@ -14,18 +14,21 @@ class Owner:
 
     def __init__(self, login: str, password: str, **kwargs):
         """
-        Create new instance of the class Owner.
+        Create new instance of the class Owner.\n
         :param login: owner login used to log into app
         :param password: new password of the Owner
-        :param name: name of the Owner
-        :param email: Owner's email
-        :param bio: Short personal summary of the Owner
-        :param photo: photo of the Owner
-        :param data_joined: Date when the Owner was created in the app.
+        :keyword name: name of the Owner
+        :keyword email: Owner's email
+        :keyword bio: Short personal summary of the Owner
+        :keyword photo: photo of the Owner
+        :keyword data_joined: Date when the Owner was created in the app.
         """
-        self.__login = login
+        assert type(login) == str
+        assert type(password) == str
+
         self.__info = OwnerInfo(
             name=kwargs.get("name", None),
+            login=login,
             password=password,
             photo=kwargs.get("photo", None),
             email=kwargs.get("email", None),
@@ -38,7 +41,7 @@ class Owner:
 
     @property
     def login(self):
-        return self.__login
+        return self.__info.login
 
     @property
     def name(self):
@@ -50,6 +53,7 @@ class Owner:
 
     @info.setter
     def info(self, **kwargs):
+        # TODO can't set probably
         for key, value in kwargs.items():
             try:
                 setattr(self.__info, key, value)
@@ -81,7 +85,7 @@ class Owner:
 
     def create_diary(self, title: str, bio = None):
         """
-        Create new Diary and add it to database of Diaries of the Owner
+        Create new Diary and add it to database of Diaries of the Owner\n
         :param title: Title of the new Diary
         :param bio: Short summary of the new Diary
         :return: True if Diary was created, False otherwise
@@ -92,6 +96,7 @@ class Owner:
         date_of_creation = datetime.now()
         new_diary = Diary(title=title, bio=bio, date_of_creation=date_of_creation)
         try:
+            # add new Diary to the dictionary
             self.dict_of_diaries[title] = new_diary
         except Exception as e:
             log.info(datetime.now().strftime(Owner.cfg.log_time_format) + f" - Failed to create new Diary"
@@ -99,9 +104,9 @@ class Owner:
                                                                           f"Exception: {e}")
             raise e
 
-    def delete_diary(self, title):
+    def delete_diary(self, title) -> bool:
         """
-        Deletes diary stored in the dict_of_diaries
+        Deletes diary stored in the dict_of_diaries\n
         :param title: Title of the Diary. Unique identification.
         :return: True if Diary was successfully deleted. False if there is no diary with such title. Propagate exception if unexpected error occurs
         """
