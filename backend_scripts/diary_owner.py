@@ -39,6 +39,9 @@ class Owner:
         log.info(datetime.now().strftime(Owner.cfg.log_time_format) +
                  f" - New instance of owner was created. {str(self)}")
 
+    def __str__(self):
+        return f"<Owner> Login: {self.login}, Name: {self.name}, having {self.dict_of_diaries.__len__()} diary books."
+
     @property
     def login(self):
         return self.__info.login
