@@ -23,43 +23,43 @@ class Diary:
         :param dict_of_records: dictionary containing all existing DiaryRecords.
         :param bio: Short summary about the Diary book.
         """
-        self.__title = title
-        self.__date_of_creation = date_of_creation if date_of_creation else datetime.today()
-        self.__dict_of_records = dict_of_records if dict_of_records else {}
-        self.__bio = bio
-        self.__dict_of_removed_records = {}
-        self.__id_date_relation_dict = TwoWayDict()
-        self.__last_id: int = max(dict_of_records.keys()) if dict_of_records else None
+        self._title = title
+        self._date_of_creation = date_of_creation if date_of_creation else datetime.today()
+        self._dict_of_records = dict_of_records if dict_of_records else {}
+        self._bio = bio
+        self._dict_of_removed_records = {}
+        self._id_date_relation_dict = TwoWayDict()
+        self._last_id: int = max(dict_of_records.keys()) if dict_of_records else None
         log.info(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") +
                  f"Diary was created {str(self)}")
 
     @property
     def title(self):
-        return self.__title
+        return self._title
 
     @title.setter
     def title(self, value: str):
-        self.__title = value
+        self._title = value
 
     @property
     def bio(self):
-        return self.__bio
+        return self._bio
 
     @bio.setter
     def bio(self, value: str):
-        self.__bio = value
+        self._bio = value
 
     @property
     def date_of_creation(self):
-        return self.__date_of_creation
+        return self._date_of_creation
 
     @property
     def dict_of_records(self):
-        return self.__dict_of_records
+        return self._dict_of_records
 
     @property
     def dict_of_removed_records(self):
-        return self.__dict_of_removed_records
+        return self._dict_of_removed_records
 
     def __str__(self):
         date_str = self.date_of_creation.strftime("%d. %m. %Y")
@@ -69,7 +69,7 @@ class Diary:
     def delete_record(self, record_id: int):
         if record_id in self.dict_of_records:
             self.dict_of_removed_records[record_id] = self.dict_of_records.pop(record_id)
-            del self.__id_date_relation_dict[record_id]
+            del self._id_date_relation_dict[record_id]
         else:
             log.warning(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") +
                         f"No such record with id = {record_id} in diary {str(self)}")
@@ -119,24 +119,24 @@ class Diary:
         assert type(title) == str
         assert type(text) == str
 
-        if self.__last_id is None:
-            self.__last_id = 0
+        if self._last_id is None:
+            self._last_id = 0
         else:
-            self.__last_id += 1
+            self._last_id += 1
 
-        if self.dict_of_records.get(self.__last_id, None):
+        if self.dict_of_records.get(self._last_id, None):
             # If record with this id already exist (it shouldn't) reset the counter
-            self.__last_id = max(self.dict_of_records.keys())
+            self._last_id = max(self.dict_of_records.keys())
             log.warning(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") +
-                        f"id: {self.__last_id} is already taken! last_id counter was reset")
+                        f"id: {self._last_id} is already taken! last_id counter was reset")
 
         try:
-            self.dict_of_records[self.__last_id] = DiaryRecord(id=self.__last_id,
-                                                               date=date_of_record,
-                                                               title=title,
-                                                               text=text,
-                                                               date_of_creation=date_of_creation)
-            self.__id_date_relation_dict[self.__last_id] = date_of_record
+            self.dict_of_records[self._last_id] = DiaryRecord(id=self._last_id,
+                                                              date=date_of_record,
+                                                              title=title,
+                                                              text=text,
+                                                              date_of_creation=date_of_creation)
+            self._id_date_relation_dict[self._last_id] = date_of_record
         except Exception as e:
             log.error(datetime.now().strftime(f"{Diary.cfg.log_time_format} - ") +
                       f"Unexpected error when creating the record in Diary. {e}")
@@ -164,12 +164,12 @@ class Diary:
         return self.dict_of_records.get(record_id, default)
 
     def get_record_by_date(self, record_date: datetime, default = None):
-        id_of_date = self.__id_date_relation_dict.get(record_date)
+        id_of_date = self._id_date_relation_dict.get(record_date)
         # returns None even if id_of_date is None
         return self.dict_of_records.get(id_of_date, default)
 
     def get_date_for_given_id(self, given_id: int, default = None):
-        return self.__id_date_relation_dict.get(given_id, default)
+        return self._id_date_relation_dict.get(given_id, default)
 
     def get_id_for_given_date(self, given_date: datetime, default = None):
-        return self.__id_date_relation_dict.get(given_date, default)
+        return self._id_date_relation_dict.get(given_date, default)

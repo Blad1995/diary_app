@@ -8,18 +8,16 @@ from config import DiaryConfig
 
 
 class DiaryRecord:
-    __IMPORT_PATTERN = r"^(\d{1,2}\. \d{1,2}\. \d{4}) – (.+): (.+)$"
+    _IMPORT_PATTERN = r"^(\d{1,2}\. \d{1,2}\. \d{4}) – (.+): (.+)$"
     cfg = DiaryConfig
 
     def __init__(self, id: int, date: datetime, title: str, text: str, date_of_creation = None):
         self.id = id
-        self.__date = date
-        self.__title = title
-        self.__text = text
-        self.__date_of_creation = date_of_creation if date_of_creation else datetime.now()
-        self.__list_of_alteration_dates = []
-        # self.__history_of_changes = {}
-        # self.__list_of_media = []
+        self._date = date
+        self._title = title
+        self._text = text
+        self._date_of_creation = date_of_creation if date_of_creation else datetime.now()
+        self._list_of_alteration_dates = []
 
         log.info(datetime.now().strftime(DiaryRecord.cfg.log_time_format) +
                  f" - Diary Record was created: {str(self)}")
@@ -27,43 +25,43 @@ class DiaryRecord:
     # ↓Setters and getters ----------------------------------------------------------
     @property
     def date(self):
-        return self.__date
+        return self._date
 
     @date.setter
     def date(self, new_date: datetime):
-        self.__date = new_date
+        self._date = new_date
 
     @property
     def title(self):
-        return self.__title
+        return self._title
 
     @title.setter
     def title(self, new_title: str):
-        self.__title = new_title
+        self._title = new_title
 
     @property
     def text(self):
-        return self.__text
+        return self._text
 
     @text.setter
     def text(self, new_text: str):
-        self.__text = new_text
+        self._text = new_text
 
     @property
     def date_of_creation(self):
-        return self.__date_of_creation
+        return self._date_of_creation
 
     @date_of_creation.setter
     def date_of_creation(self, new_date: datetime):
-        self.__date_of_creation = new_date
+        self._date_of_creation = new_date
 
     @property
     def list_of_alteration_dates(self):
-        return self.__list_of_alteration_dates
+        return self._list_of_alteration_dates
 
     @list_of_alteration_dates.setter
     def list_of_alteration_dates(self, new_date: datetime):
-        self.__list_of_alteration_dates.append(new_date)
+        self._list_of_alteration_dates.append(new_date)
 
     # ↑ Getters and setters _______________________________________
 
@@ -84,23 +82,23 @@ class DiaryRecord:
         assert type(date) in [type(None), datetime], f"Parameter provided for 'date' is not suitable." \
                                                      f" Date should be 'datetime'. Given parameter is: '{type(date)}'"
 
-        self.__title = self.__title if title is None else title
-        self.__text = self.__text if text is None else text
-        self.__date = self.__date if date is None else date
-        self.__list_of_alteration_dates.append(datetime.now() if alteration_date is None else alteration_date)
+        self._title = self._title if title is None else title
+        self._text = self._text if text is None else text
+        self._date = self._date if date is None else date
+        self._list_of_alteration_dates.append(datetime.now() if alteration_date is None else alteration_date)
 
         log.info(datetime.now().strftime(DiaryRecord.cfg.log_time_format) +
                  f" - Diary Record was updated: {str(self)}")
 
     def __str__(self):
-        date_str = self.__date.strftime(self.cfg.natural_date_format)
-        return f"{date_str} – {self.__title}: {self.__text}"
+        date_str = self._date.strftime(self.cfg.natural_date_format)
+        return f"{date_str} – {self._title}: {self._text}"
 
     def __repr__(self):
-        repr_string = f"DiaryRecord instance\nDate: {self.__date}\nTitle: {self.__title}\n" \
-                      f"Text: {self.__text}\nDate of creation: {self.__date_of_creation}\n"
+        repr_string = f"DiaryRecord instance\nDate: {self._date}\nTitle: {self._title}\n" \
+                      f"Text: {self._text}\nDate of creation: {self._date_of_creation}\n"
         repr_string += "Dates of alternation:\n"
-        for a_date in self.__list_of_alteration_dates:
+        for a_date in self._list_of_alteration_dates:
             repr_string += str(a_date) + "\n"
         return repr_string
 
@@ -111,7 +109,7 @@ class DiaryRecord:
         ppc.copy(str(self))
 
     def export(self):
-        # todo export - možná bude  jen ta __str__ reprezentace
+        # TODO export - možná bude  jen ta __str__ reprezentace
         raise NotImplementedError
 
     @classmethod
@@ -122,8 +120,8 @@ class DiaryRecord:
         :param new_id: id to assign to newly created DiaryRecord
         :return: new DiaryRecord instance
         """
-        if re.search(DiaryRecord.__IMPORT_PATTERN, text):
-            parsed_text = re.match(DiaryRecord.__IMPORT_PATTERN, text)
+        if re.search(DiaryRecord._IMPORT_PATTERN, text):
+            parsed_text = re.match(DiaryRecord._IMPORT_PATTERN, text)
             # Assign each parsed group to corresponding variable
             date, title, text = parsed_text.groups()
 
@@ -131,4 +129,4 @@ class DiaryRecord:
                      f" - Imported text was parsed as: {parsed_text.groups()}")
             return DiaryRecord(id=new_id, date=datetime.strptime(date, cls.cfg.date_format), title=title, text=text)
         else:
-            raise ValueError(f"Format of the text to import is invalid. Expected format:\n{DiaryRecord.__IMPORT_PATTERN}")
+            raise ValueError(f"Format of the text to import is invalid. Expected format:\n{DiaryRecord._IMPORT_PATTERN}")

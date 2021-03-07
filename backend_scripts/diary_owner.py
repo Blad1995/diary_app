@@ -26,7 +26,7 @@ class Owner:
         assert type(login) == str
         assert type(password) == str
 
-        self.__info = OwnerInfo(
+        self._info = OwnerInfo(
             name=kwargs.get("name", None),
             login=login,
             password=password,
@@ -34,8 +34,8 @@ class Owner:
             email=kwargs.get("email", None),
             date_joined=kwargs.get("data_joined", None)
             )
-        self.__dict_of_diaries = {}
-        self.__bio = kwargs.get("bio", None)
+        self._dict_of_diaries = {}
+        self._bio = kwargs.get("bio", None)
         log.info(datetime.now().strftime(Owner.cfg.log_time_format) +
                  f" - New instance of owner was created. {str(self)}")
 
@@ -44,7 +44,7 @@ class Owner:
 
     @property
     def login(self):
-        return self.__info.login
+        return self._info.login
 
     @property
     def name(self):
@@ -52,14 +52,14 @@ class Owner:
 
     @property
     def info(self):
-        return self.__info
+        return self._info
 
     @info.setter
     def info(self, **kwargs):
         # TODO can't set probably
         for key, value in kwargs.items():
             try:
-                setattr(self.__info, key, value)
+                setattr(self._info, key, value)
             except AttributeError as e:
                 log.warning(datetime.now().strftime(Owner.cfg.log_time_format) +
                             f" - Invalid argument provided for info.setter in Owner - "
@@ -67,15 +67,15 @@ class Owner:
 
     @property
     def bio(self):
-        return self.__bio
+        return self._bio
 
     @bio.setter
     def bio(self, new_bio):
-        self.__bio = new_bio
+        self._bio = new_bio
 
     @property
     def dict_of_diaries(self):
-        return self.__dict_of_diaries
+        return self._dict_of_diaries
 
     def change_password(self, new_password: str, old_password) -> None:
         if self.info.is_password_valid(old_password):
