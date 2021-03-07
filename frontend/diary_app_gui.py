@@ -5,11 +5,16 @@ from kivy.lang import Builder
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import FadeTransition, Screen, ScreenManager
+# noinspection PyUnresolvedReferences
+from KivyCalendar import DatePicker, CalendarWidget
 
 from diary_app import DiaryControl
+from backend_scripts.diary_owner import Owner
+from backend_scripts.diary_book import Diary
+from backend_scripts.diary_record import DiaryRecord
 
 kivy_require('1.11.1')
-Window.size = (800, 600)
+Window.size = (1280, 800)
 Window.minimum_width, Window.minimum_height = (600, 450)
 
 
@@ -31,10 +36,14 @@ class EntryWindow(Screen):
 
 
 class DiaryPickWindow(Screen):
-    def on_pre_enter(self, *args):
-        app = App.get_running_app()
-        # diaries
-        # for i in
+    def on_enter(self, *args):
+        app: DiaryAppGUI = App.get_running_app()
+        if app.current_owner:
+            diaries = app.current_owner.dict_of_diaries
+        else:
+            raise RuntimeError("No diary chosen. Invalid sequence of steps.")
+        for title, diary in diaries:
+            print(f"Diary named {title}")
 
 
 class DatePickWindow(Screen):
@@ -130,24 +139,24 @@ class CreateUserWindow(Screen):
         change_screen(screen_instance=self, new_screen="W_Entry")
 
 
-app_builder = Builder.load_file("diary_app_design.kv")
-
-
 class DiaryAppGUI(App):
     diary_ctr: DiaryControl = DiaryControl("../")
 
     def __init__(self, *args, **kwargs):
         super(DiaryAppGUI, self).__init__(*args, **kwargs)
-        self.current_owner = None
+        self.current_owner: Owner = None
+        self.current_diary: Diary = None
+        self.current_record: DiaryRecord = None
 
     def build(self):
-        return app_builder
+        return Builder.load_file("diary_app_design.kv")
 
     def on_start(self):
         if not self.diary_ctr.cfg.first_use:
             self.diary_ctr.load_owners_info_from_disc()
 
     def on_stop(self):
+        # self.diary_ctr.save_data_to_disc()
         self.diary_ctr.cfg.save()
 
 
