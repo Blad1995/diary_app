@@ -1,6 +1,7 @@
 import logging as log
 import re as re
 from datetime import datetime
+from typing import NoReturn, Optional
 
 import pyperclip as ppc
 
@@ -11,7 +12,7 @@ class DiaryRecord:
     _IMPORT_PATTERN = r"^(\d{1,2}\. \d{1,2}\. \d{4}) – (.+): (.+)$"
     cfg = DiaryConfig
 
-    def __init__(self, id: int, date: datetime, title: str, text: str, date_of_creation = None):
+    def __init__(self, id: int, date: datetime, title: str, text: str, date_of_creation: Optional[datetime] = None):
         self.id = id
         self._date = date
         self._title = title
@@ -65,7 +66,12 @@ class DiaryRecord:
 
     # ↑ Getters and setters _______________________________________
 
-    def update(self, date: datetime = None, text: str = None, title: str = None, alteration_date: datetime = None) -> None:
+    def update(self,
+               date: Optional[datetime] = None,
+               text: Optional[str] = None,
+               title: Optional[str] = None,
+               alteration_date: Optional[datetime] = None
+               ) -> NoReturn:
         """
         Update existing DiaryRecord. Raise TypeError exception if the provided parameters type are not suitable.
         :param date: New date of the record. If None, then no changes in date happen.
@@ -90,11 +96,11 @@ class DiaryRecord:
         log.info(datetime.now().strftime(DiaryRecord.cfg.log_time_format) +
                  f" - Diary Record was updated: {str(self)}")
 
-    def __str__(self):
+    def __str__(self) -> str:
         date_str = self._date.strftime(self.cfg.natural_date_format)
         return f"{date_str} – {self._title}: {self._text}"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_string = f"DiaryRecord instance\nDate: {self._date}\nTitle: {self._title}\n" \
                       f"Text: {self._text}\nDate of creation: {self._date_of_creation}\n"
         repr_string += "Dates of alternation:\n"
@@ -102,7 +108,7 @@ class DiaryRecord:
             repr_string += str(a_date) + "\n"
         return repr_string
 
-    def export_to_clipboard(self) -> None:
+    def export_to_clipboard(self) -> NoReturn:
         """
         Function for copying DiaryRecord to clipboard.
         """
@@ -123,10 +129,10 @@ class DiaryRecord:
         if re.search(DiaryRecord._IMPORT_PATTERN, text):
             parsed_text = re.match(DiaryRecord._IMPORT_PATTERN, text)
             # Assign each parsed group to corresponding variable
-            date, title, text = parsed_text.groups()
+            date, title, diary_text = parsed_text.groups()
 
             log.info(datetime.now().strftime(DiaryRecord.cfg.log_time_format) +
                      f" - Imported text was parsed as: {parsed_text.groups()}")
-            return DiaryRecord(id=new_id, date=datetime.strptime(date, cls.cfg.date_format), title=title, text=text)
+            return DiaryRecord(id=new_id, date=datetime.strptime(date, cls.cfg.date_format), title=title, text=diary_text)
         else:
             raise ValueError(f"Format of the text to import is invalid. Expected format:\n{DiaryRecord._IMPORT_PATTERN}")
