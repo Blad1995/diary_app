@@ -1,7 +1,6 @@
 data_extension: .Ddata
 date_format: '%Y-%m-%d'
 dir_path: ./data/
-first_use: false
-log_time_format: '%d.%m.%Y-%H:%M:%S'
+first_use: true
 natural_date_format: '%d. %m. %Y'
 owner_credentials_file_name: owners_info.Ddata

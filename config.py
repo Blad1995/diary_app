@@ -1,48 +1,67 @@
-import logging as log
+import logging
 import os as os
-from datetime import datetime
+import sys
+from typing import Optional
 
+import structlog
+import structlog_pretty
 import yaml as yaml
 
 
 class DiaryConfig:
-    __config_path = "config.yml"
-    dir_path: str = None
-    first_use: bool = None
-    log_time_format: str = None
-    owner_credentials_file_name: str = None
-    date_format: str = None
-    natural_date_format: str = None
-    data_extension: str = None
-    __keys = []
+    _config_path = "config.yml"
+    dir_path: Optional[str] = None
+    first_use: Optional[bool] = None
+    owner_credentials_file_name: Optional[str] = None
+    date_format: Optional[str] = None
+    natural_date_format: Optional[str] = None
+    data_extension: Optional[str] = None
+    _keys = []
+    logger = None
 
     @classmethod
     def load(cls, config_path = "./"):
-        with open(os.path.join(config_path, cls.__config_path), mode="r") as f:
+        cls.configure_logger()
+        cls.logger = structlog.getLogger()
+        with open(os.path.join(config_path, cls._config_path), mode="r") as f:
             cfg = yaml.safe_load(f)
         if not cfg:
             raise RuntimeError("Cannot find config file.")
+        cls._keys = set(cfg.keys())
 
-        cls.__keys = cfg.keys()
-
-        try:
-            cls.dir_path = cfg['dir_path']
-            cls.first_use = cfg["first_use"]
-            cls.log_time_format = cfg['log_time_format']
-            cls.owner_credentials_file_name = cfg["owner_credentials_file_name"]
-            cls.date_format = cfg["date_format"]
-            cls.natural_date_format = cfg["natural_date_format"]
-            cls.data_extension = cfg["data_extension"]
-        except KeyError as ke:
-            log.error(datetime.now().strftime("%d.%m.%Y-%H:%M:%S") + f" - Unknown error in config file. {ke}")
-            raise RuntimeError(f"Config file has been corrupted. {ke}")
+        for key in cls._keys:
+            try:
+                setattr(cls, key, cfg[key])
+            except KeyError as ke:
+                cls.logger.error("config.loading.unknown_key", key=key)
+                raise RuntimeError(f"Config file has been corrupted.") from ke
+        cls.logger.info("config.loading.success", keys=cls._keys)
 
     @classmethod
     def save(cls):
-        cfg = {key: value for key, value in cls.__dict__.items() if key in cls.__keys}
+        cfg = {key: value for key, value in cls.__dict__.items() if key in cls._keys}
         try:
-            with open(cls.__config_path, "w") as f:
+            with open(cls._config_path, "w") as f:
                 yaml.safe_dump(data=cfg, stream=f)
         except IOError as e:
-            log.error(datetime.now().strftime(cls.log_time_format) + f" - Error writing to config.yml file. {e}")
+            cls.logger.error(f"config.writing.io_error", path=cls._config_path)
             raise e
+
+    @classmethod
+    def configure_logger(cls):
+        debug_processors = [
+            structlog.stdlib.add_log_level,
+            structlog.stdlib.PositionalArgumentsFormatter(),
+            structlog_pretty.NumericRounder(),
+            structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S"),
+            structlog.processors.ExceptionPrettyPrinter(),
+            structlog.processors.UnicodeDecoder(),
+            structlog.dev.ConsoleRenderer(pad_event=25),
+        ]
+
+        structlog.configure(
+            processors=debug_processors,
+            logger_factory=structlog.PrintLoggerFactory(),
+            wrapper_class=structlog.stdlib.BoundLogger,
+            context_class=structlog.threadlocal.wrap_dict(dict),
+        )
