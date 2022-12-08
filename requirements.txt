@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file=requirements.txt requirements.in
 #
-certifi==2020.12.5
+certifi==2022.12.7
     # via requests
 chardet==4.0.0
     # via requests
@@ -14,12 +14,12 @@ docutils==0.17.1
     # via kivy
 idna==2.10
     # via requests
-kivy-garden==0.1.4
-    # via kivy
 kivy==2.0.0
     # via
     #   -r requirements.in
     #   kivycalendar
+kivy-garden==0.1.4
+    # via kivy
 kivycalendar==0.1.3
     # via -r requirements.in
 pygments==2.8.1
@@ -30,9 +30,9 @@ pyperclip==1.8.2
     # via -r requirements.in
 requests==2.25.1
     # via kivy-garden
-structlog-pretty==0.3.0
-    # via -r requirements.in
 structlog==21.1.0
+    # via -r requirements.in
+structlog-pretty==0.3.0
     # via -r requirements.in
 urllib3==1.26.4
     # via requests
